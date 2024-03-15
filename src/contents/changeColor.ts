@@ -13,8 +13,6 @@ export const config: PlasmoCSConfig = {
 // popover background-color (actual body bg), popover-header background-color, popover-body background-color
 // calendar :
 //  + today: .maincalendar .calendarmonth td.today .day-number-circle
-//
-
 //body background-color,
 //TEXT COLOR: Same line means similar color
 // body : originally black
@@ -29,7 +27,7 @@ export const config: PlasmoCSConfig = {
 const storage = new Storage({
   area: "local"
 })
-
+console.log("Original color : ", getOriginalColor())
 //Watch current pallete
 storage.watch({
   currentPallette: (c) => {
@@ -37,6 +35,56 @@ storage.watch({
     changeElementColor(c.newValue || "white")
   }
 })
+
+function storeOriginalColor() {
+  storage.get("originalPallete").then((originalPallete) => {
+    if (!originalPallete) {
+      const textColor = getComputedStyle(document.body).color
+      const backgroundColor = getComputedStyle(document.body).backgroundColor
+      const primaryColor = getComputedStyle(
+        document.querySelector(".card")
+      ).backgroundColor
+      const accentColor = getComputedStyle(
+        document.querySelector(".alert-info")
+      ).backgroundColor
+      const secondaryColor = getComputedStyle(
+        document.querySelector(".btn-secondary")
+      ).backgroundColor
+      const originalPallete = {
+        textColor,
+        backgroundColor,
+        primaryColor,
+        accentColor,
+        secondaryColor
+      }
+      storage.set("originalPallete", originalPallete)
+      console.log("Original pallete stored: ", originalPallete)
+    }
+  })
+}
+
+function getOriginalColor() {
+  const textColor = getComputedStyle(document.body).color
+  const backgroundColor = getComputedStyle(document.body).backgroundColor
+  const primaryColor = getComputedStyle(
+    document.querySelector(".card")
+  ).backgroundColor
+  const accentColor = getComputedStyle(
+    document.querySelector(".alert-info")
+  ).backgroundColor
+  const secondaryColor = getComputedStyle(
+    document.querySelector(".btn-secondary")
+  ).backgroundColor
+  const originalPallete = {
+    textColor,
+    backgroundColor,
+    primaryColor,
+    accentColor,
+    secondaryColor
+  }
+  return originalPallete
+}
+
 function changeElementColor(color: any) {
   changeTextColor(color.textColor)
   changeBodyColor(color.backgroundColor)
@@ -132,6 +180,8 @@ function changeRegionMainColor(color: string) {
   regionMainBox.style.backgroundColor = color
 }
 
+//UTILS: Refactor later
+
 function adjust(color, amount) {
   return (
     "#" +
@@ -144,4 +194,13 @@ function adjust(color, amount) {
         ).substr(-2)
       )
   )
+}
+
+function componentToHex(c) {
+  var hex = c.toString(16)
+  return hex.length == 1 ? "0" + hex : hex
+}
+
+function rgbToHex(r, g, b) {
+  return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b)
 }
