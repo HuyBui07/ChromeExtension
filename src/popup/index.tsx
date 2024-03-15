@@ -16,13 +16,20 @@ function IndexPopup() {
 
   //Set all to null
   const resetColors = async () => {
-    await storage.set("currentPallette", {
-      textColor: null,
-      backgroundColor: null,
-      primaryColor: null,
-      secondaryColor: null,
-      accentColor: null
-    })
+    const originalPallette = await storage.get("originalPallette")
+    if (originalPallette) {
+      console.log("originalPallette", originalPallette)
+      await storage.set("currentPallette", originalPallette)
+    } else {
+      console.log("No original pallette found")
+      await storage.set("currentPallette", {
+        textColor: null,
+        backgroundColor: null,
+        primaryColor: null,
+        secondaryColor: null,
+        accentColor: null
+      })
+    }
   }
   const setColors = async () => {
     //Convert above in to setting a single pallette object
