@@ -10,6 +10,8 @@
     "package": "plasmo package"
   },
   "dependencies": {
+    "@plasmohq/messaging": "^0.6.2",
+    "@plasmohq/storage": "^1.9.3",
     "plasmo": "0.84.2",
     "react": "18.2.0",
     "react-dom": "18.2.0"
@@ -24,6 +26,9 @@
     "typescript": "5.3.3"
   },
   "manifest": {
+    "permissions": [
+      "scripting"
+    ],
     "host_permissions": [
       "https://*/*"
     ]
