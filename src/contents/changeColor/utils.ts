@@ -3,6 +3,8 @@ import { Storage } from "@plasmohq/storage"
 const storage = new Storage({
   area: "local"
 })
+
+//Adjust color brightness by amount
 function adjust(color, amount) {
   return (
     "#" +
@@ -16,7 +18,7 @@ function adjust(color, amount) {
       )
   )
 }
-
+//Convert rgb to hex
 function componentToHex(c) {
   var hex = c.toString(16)
   return hex.length == 1 ? "0" + hex : hex
@@ -25,6 +27,8 @@ function componentToHex(c) {
 function rgbToHex(r, g, b) {
   return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b)
 }
+
+//Store original color just in case
 function storeOriginalColor() {
   const textColor = getComputedStyle(document.body).color
   const backgroundColor = getComputedStyle(document.body).backgroundColor
