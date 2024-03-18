@@ -2,8 +2,9 @@ import { useEffect, useState } from "react"
 
 import "../../style.css"
 
-function IndexPopup() {
 
+
+function IndexPopup() {
   const handleClick = () => {
     chrome.storage.sync.set({ draculaTheme: true }, () => {
       console.log('The "draculaTheme" setting has been saved.')

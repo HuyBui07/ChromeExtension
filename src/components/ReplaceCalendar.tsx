@@ -1,6 +1,8 @@
 import "../../style.css"
+import type  { Deadline } from "../types"
 
-const ReplaceCalendar = ({ deadlines }) => {
+
+const ReplaceCalendar = ({ deadlines }: { deadlines: Deadline[] }) => {
   return (
     <div>
       {deadlines.map((item, index) => (
