@@ -1,8 +1,9 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-import "./style.css"
+import "../../style.css"
 
 function IndexPopup() {
+
   const handleClick = () => {
     chrome.storage.sync.set({ draculaTheme: true }, () => {
       console.log('The "draculaTheme" setting has been saved.')
