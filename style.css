@@ -9,4 +9,9 @@
 .deadline-tile {
   @apply flex flex-col items-center justify-center w-[90%] h-10 ml-auto mr-auto mt-2 mb-2 p-4 border-2 border-black;
   @apply hover:bg-gray-300;
+  @apply cursor-pointer;
+}
+
+.hide {
+  @apply hidden !important;
 }

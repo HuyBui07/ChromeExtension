@@ -1,5 +1,6 @@
 export type Deadline = {
-  day: string
-  month: string
-  year: string
+  day: number
+  month: number
+  year: number
+  timestamp: number
 }
