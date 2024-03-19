@@ -10,7 +10,7 @@ const ReplaceCalendar = ({ deadlines }: { deadlines: Deadline[] }) => {
       {deadlines.map((item, index) => {
         const date = new Date(item.year, item.month - 1, item.day)
         return (
-          <div className="deadline-tile" key={index} onClick={() => {
+          <div className="deadline-tile " key={index} onClick={() => {
             window.location.href = "/calendar/view.php?view=day&time=" + item.timestamp
           }}>
             {weekdays[date.getDay()]}, {item.day}/{item.month}/{item.year}

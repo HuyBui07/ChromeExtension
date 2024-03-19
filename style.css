@@ -15,3 +15,8 @@
 .hide {
   @apply hidden !important;
 }
+
+.upcoming {
+  @apply bg-[#0f6cbf];
+  @apply opacity-5;
+}
