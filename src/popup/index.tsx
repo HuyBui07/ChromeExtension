@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react"
+
 import "../../style.css"
+
 import { sendToBackground } from "@plasmohq/messaging"
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
+
 //Pallete 1 - Text Color: #EBE9FC, Background Color: #010104, Primary Color: #3A31D8, Secondary Color: #020024, Accent Color: #0600C2
 //Default pallete - set all to null
-
-
-
 
 function IndexPopup() {
   const storage = new Storage({ area: "local" })
@@ -18,7 +18,7 @@ function IndexPopup() {
   })
 
   const setColors = async () => {
-    await storage.set("currentPalette", {
+    await storage.set("currentPallette", {
       textColor: "#EBE9FC",
       backgroundColor: "#010104",
       primaryColor: "#3A31D8",
@@ -30,9 +30,9 @@ function IndexPopup() {
   const resetColors = async () => {
     const originalPalette = await storage.get("originalPalette")
     if (originalPalette) {
-      await storage.set("currentPalette", originalPalette)
+      await storage.set("currentPallette", originalPalette)
     } else {
-      await storage.set("currentPalette", {
+      await storage.set("currentPallette", {
         textColor: null,
         backgroundColor: null,
         primaryColor: null,
@@ -79,25 +79,85 @@ function IndexPopup() {
       <button onClick={handleDelete} className="button">
         Delete theme
       </button>
-      <div style={{ marginBottom: 20, display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+      <div
+        style={{
+          marginBottom: 20,
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between"
+        }}>
         <div>Current text color: {currentPalette?.textColor}</div>
-        <div style={{ width: 10, height: 10, backgroundColor: currentPalette?.textColor }} />
+        <div
+          style={{
+            width: 10,
+            height: 10,
+            backgroundColor: currentPalette?.textColor
+          }}
+        />
       </div>
-      <div style={{ marginBottom: 20, display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+      <div
+        style={{
+          marginBottom: 20,
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between"
+        }}>
         <div>Current background color: {currentPalette?.backgroundColor}</div>
-        <div style={{ width: 10, height: 10, backgroundColor: currentPalette?.backgroundColor }} />
+        <div
+          style={{
+            width: 10,
+            height: 10,
+            backgroundColor: currentPalette?.backgroundColor
+          }}
+        />
       </div>
-      <div style={{ marginBottom: 20, display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+      <div
+        style={{
+          marginBottom: 20,
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between"
+        }}>
         <div>Current primary color: {currentPalette?.primaryColor}</div>
-        <div style={{ width: 10, height: 10, backgroundColor: currentPalette?.primaryColor }} />
+        <div
+          style={{
+            width: 10,
+            height: 10,
+            backgroundColor: currentPalette?.primaryColor
+          }}
+        />
       </div>
-      <div style={{ marginBottom: 10, display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+      <div
+        style={{
+          marginBottom: 10,
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between"
+        }}>
         <div>Current secondary color: {currentPalette?.secondaryColor}</div>
-        <div style={{ width: 10, height: 10, backgroundColor: currentPalette?.secondaryColor }} />
+        <div
+          style={{
+            width: 10,
+            height: 10,
+            backgroundColor: currentPalette?.secondaryColor
+          }}
+        />
       </div>
-      <div style={{ marginBottom: 10, display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+      <div
+        style={{
+          marginBottom: 10,
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between"
+        }}>
         <div>Current accent color: {currentPalette?.accentColor}</div>
-        <div style={{ width: 10, height: 10, backgroundColor: currentPalette?.accentColor }} />
+        <div
+          style={{
+            width: 10,
+            height: 10,
+            backgroundColor: currentPalette?.accentColor
+          }}
+        />
       </div>
     </div>
   )
