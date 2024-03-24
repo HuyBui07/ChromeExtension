@@ -3,4 +3,5 @@ export type Deadline = {
   month: number
   year: number
   timestamp: number
+  eventList: string[]
 }
