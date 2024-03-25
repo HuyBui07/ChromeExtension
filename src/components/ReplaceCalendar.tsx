@@ -19,7 +19,7 @@ const ReplaceCalendar = ({ deadlines }: { deadlines: Deadline[] }) => {
             }}>
             {weekdays[date.getDay()]}, {item.day}/{item.month}/{item.year}
             {item.eventList.map((event, index) => {
-              return <div key={index}>{event}</div>
+              return <div key={index}>- {event}</div>
             })}
           </div>
         )

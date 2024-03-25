@@ -20,11 +20,11 @@ const ReplaceCalendarCS = () => {
     newHeadline.innerHTML = "Deadlines"
     headline.replaceWith(newHeadline)
 
-    const userbutton = document.getElementsByClassName("userbutton")[0] as HTMLElement
+    const userbutton = document.getElementsByClassName(
+      "userbutton"
+    )[0] as HTMLElement
     userbutton.style.display = "flex"
     userbutton.style.alignItems = "center"
-
-    console.log(userbutton)
 
     const ChangeCalendar = () => {
       //get data
@@ -62,6 +62,8 @@ const ReplaceCalendarCS = () => {
     ChangeCalendar()
 
     const observer = new MutationObserver(() => {
+      if (document.querySelectorAll(".calendarmonth, .calendartable, .mb-0")[0])
+        return
       ChangeCalendar()
     })
 
@@ -81,9 +83,8 @@ const ReplaceCalendarCS = () => {
     document.body.style.visibility = "visible"
 
     return () => {
-      observer.disconnect();
-    };
-
+      observer.disconnect()
+    }
   }, [])
 
   return null
