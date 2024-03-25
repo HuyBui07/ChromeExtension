@@ -30,7 +30,6 @@ const OrganizeCoursesCS = () => {
     const coursesDiv = document.getElementsByClassName(
       "frontpage-course-list-enrolled"
     )[0]
-    console.log(coursesDiv)
 
     // Get all course elements in the div
     const courseElements = Array.from(coursesDiv.children)
