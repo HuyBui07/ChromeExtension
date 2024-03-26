@@ -20,6 +20,12 @@ const ReplaceCalendarCS = () => {
     newHeadline.innerHTML = "Deadlines"
     headline.replaceWith(newHeadline)
 
+    const userbutton = document.getElementsByClassName(
+      "userbutton"
+    )[0] as HTMLElement
+    userbutton.style.display = "flex"
+    userbutton.style.alignItems = "center"
+
     const ChangeCalendar = () => {
       //get data
       const deadlines = document.getElementsByTagName("td")
@@ -28,16 +34,21 @@ const ReplaceCalendarCS = () => {
         const deadline = deadlines[i]
         if (deadline.className.includes("hasevent")) {
           const a = deadline.getElementsByTagName("a")[0]
+          const eventName = deadline.getElementsByClassName("eventname")
+          const eventList = []
+          for (let j = 0; j < eventName.length; j++) {
+            eventList.push(eventName[j].innerHTML)
+          }
           const addedDeadline: Deadline = {
             day: parseInt(a.getAttribute("data-day")),
             month: parseInt(a.getAttribute("data-month")),
             year: parseInt(a.getAttribute("data-year")),
-            timestamp: parseInt(a.getAttribute("data-timestamp"))
+            timestamp: parseInt(a.getAttribute("data-timestamp")),
+            eventList: eventList
           }
           deadlinesArr.push(addedDeadline)
         }
       }
-      console.log(deadlinesArr)
 
       //render
       const targetElement = document.querySelectorAll(
@@ -51,7 +62,13 @@ const ReplaceCalendarCS = () => {
     ChangeCalendar()
 
     const observer = new MutationObserver(() => {
-      ChangeCalendar()
+      if (
+        document
+          .querySelectorAll(".calendarmonth, .calendartable, .mb-0")[0]
+          .getElementsByTagName("thead").length > 0
+      ) {
+        ChangeCalendar()
+      }
     })
 
     const maincalendar = document.getElementsByClassName("maincalendar")[0]
@@ -68,6 +85,10 @@ const ReplaceCalendarCS = () => {
 
     //show the body after rendering
     document.body.style.visibility = "visible"
+
+    return () => {
+      observer.disconnect()
+    }
   }, [])
 
   return null
