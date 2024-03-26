@@ -13,10 +13,12 @@ function IndexPopup() {
   const storage = new Storage({ area: "local" })
 
   const [currentPalette, setCurrentPalette, { setStoreValue }] = useStorage({
-    key: "currentPalette",
+    key: "currentPallette",
     instance: storage
   })
-
+  useEffect(() => {
+    console.log("currentPallette", currentPalette)
+  }, [currentPalette])
   const setColors = async () => {
     await storage.set("currentPallette", {
       textColor: "#EBE9FC",
@@ -41,25 +43,6 @@ function IndexPopup() {
       })
     }
   }
-  const handleClick = () => {
-    chrome.storage.sync.set({ draculaTheme: true }, () => {
-      console.log('The "draculaTheme" setting has been saved.')
-    })
-
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, { message: "color_change" })
-    })
-  }
-
-  const handleDelete = () => {
-    chrome.storage.sync.set({ draculaTheme: false }, () => {
-      console.log('The "draculaTheme" setting has been deleted.')
-    })
-
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, { message: "revert_changes" })
-    })
-  }
 
   return (
     <div
@@ -69,96 +52,70 @@ function IndexPopup() {
         width: 300,
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        backgroundColor: "#F1F3F0"
       }}>
-      <button onClick={setColors}>Set color</button>
-      <button onClick={resetColors}>Reset colors</button>
-      <button onClick={handleClick} className="button mb-9">
-        Dracula
-      </button>
-      <button onClick={handleDelete} className="button">
-        Delete theme
-      </button>
-      <div
-        style={{
-          marginBottom: 20,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between"
-        }}>
-        <div>Current text color: {currentPalette?.textColor}</div>
+      <div className="text-section">
+        <div className="color-text">
+          Current text color: {currentPalette?.textColor}
+        </div>
         <div
+          className="color-box"
           style={{
-            width: 10,
-            height: 10,
             backgroundColor: currentPalette?.textColor
           }}
         />
       </div>
-      <div
-        style={{
-          marginBottom: 20,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between"
-        }}>
-        <div>Current background color: {currentPalette?.backgroundColor}</div>
+      <div className="text-section">
+        <div className="color-text">
+          Current background color: {currentPalette?.backgroundColor}
+        </div>
         <div
+          className="color-box"
           style={{
-            width: 10,
-            height: 10,
             backgroundColor: currentPalette?.backgroundColor
           }}
         />
       </div>
-      <div
-        style={{
-          marginBottom: 20,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between"
-        }}>
-        <div>Current primary color: {currentPalette?.primaryColor}</div>
+      <div className="text-section">
+        <div className="color-text">
+          Current primary color: {currentPalette?.primaryColor}
+        </div>
         <div
+          className="color-box"
           style={{
-            width: 10,
-            height: 10,
             backgroundColor: currentPalette?.primaryColor
           }}
         />
       </div>
-      <div
-        style={{
-          marginBottom: 10,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between"
-        }}>
-        <div>Current secondary color: {currentPalette?.secondaryColor}</div>
+      <div className="text-section">
+        <div className="color-text">
+          Current secondary color: {currentPalette?.secondaryColor}
+        </div>
         <div
+          className="color-box"
           style={{
-            width: 10,
-            height: 10,
             backgroundColor: currentPalette?.secondaryColor
           }}
         />
       </div>
-      <div
-        style={{
-          marginBottom: 10,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between"
-        }}>
-        <div>Current accent color: {currentPalette?.accentColor}</div>
+      <div className="text-section">
+        <div className="color-text">
+          Current accent color: {currentPalette?.accentColor}
+        </div>
         <div
+          className="color-box"
           style={{
-            width: 10,
-            height: 10,
             backgroundColor: currentPalette?.accentColor
           }}
         />
       </div>
+      <button onClick={setColors} className="button">
+        Set color
+      </button>
+      <button onClick={resetColors} className="button-danger">
+        Reset colors
+      </button>
     </div>
   )
 }
