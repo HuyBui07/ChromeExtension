@@ -62,9 +62,13 @@ const ReplaceCalendarCS = () => {
     ChangeCalendar()
 
     const observer = new MutationObserver(() => {
-      if (document.querySelectorAll(".calendarmonth, .calendartable, .mb-0")[0])
-        return
-      ChangeCalendar()
+      if (
+        document
+          .querySelectorAll(".calendarmonth, .calendartable, .mb-0")[0]
+          .getElementsByTagName("thead").length > 0
+      ) {
+        ChangeCalendar()
+      }
     })
 
     const maincalendar = document.getElementsByClassName("maincalendar")[0]
