@@ -1,5 +1,6 @@
 import type { PlasmoCSConfig } from "plasmo"
-import { useEffect } from "react"
+import React, { useEffect, useState } from "react"
+import ReactDOM from "react-dom"
 
 //components
 import CourseNote from "~src/components/CourseNote"
@@ -40,10 +41,57 @@ const CourseNotesCS = () => {
         localStorage.setItem(`courseNote-${courseId}`, courseNote.value)
       })
 
+      const buttonDiv = document.createElement("div")
+
       // Append the new div to the course element
-      courseElement.appendChild(courseNote)
+      if (!courseElement.classList.contains("paging"))
+        courseElement.appendChild(buttonDiv)
+
+      ReactDOM.render(<OpenNotesButton courseId={courseId} />, buttonDiv)
     }
   })
+}
+
+const OpenNotesButton = ({ courseId }) => {
+  const [value, setValue] = useState(
+    localStorage.getItem(`courseNote-${courseId}`) || ""
+  )
+
+  return (
+    <>
+      <button
+        className="btn"
+        onClick={() =>
+          (
+            document.getElementById("my_modal_1") as HTMLDialogElement
+          ).showModal()
+        }>
+        Open notes
+      </button>
+      <dialog id="my_modal_1" className="w-[50%] p-5 rounded-md">
+        <textarea
+          placeholder="Add a note..."
+          value={value}
+          onChange={(e) => {
+            setValue(e.target.value)
+            localStorage.setItem(`courseNote-${courseId}`, e.target.value)
+          }}
+          className="w-full h-[200px] border border-gray-300 rounded p-2"
+        />
+        <div className="flex flex-row w-full">
+          <button
+            className="ml-auto border-2 border-gray-300 rounded-md p-2"
+            onClick={() =>
+              (
+                document.getElementById("my_modal_1") as HTMLDialogElement
+              ).close()
+            }>
+            Close
+          </button>
+        </div>
+      </dialog>
+    </>
+  )
 }
 
 export default CourseNotesCS
