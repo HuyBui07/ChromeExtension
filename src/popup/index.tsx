@@ -30,18 +30,8 @@ function IndexPopup() {
   }
 
   const resetColors = async () => {
-    const originalPalette = await storage.get("originalPalette")
-    if (originalPalette) {
-      await storage.set("currentPallette", originalPalette)
-    } else {
-      await storage.set("currentPallette", {
-        textColor: null,
-        backgroundColor: null,
-        primaryColor: null,
-        secondaryColor: null,
-        accentColor: null
-      })
-    }
+    //Set straight to null
+    await storage.set("currentPallette", null)
   }
 
   return (
