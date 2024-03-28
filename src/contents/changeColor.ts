@@ -10,7 +10,16 @@ import {
 import { adjust, storeOriginalColor } from "./changeColor/utils"
 
 export const config: PlasmoCSConfig = {
-  matches: ["https://courses.uit.edu.vn/"],
+  matches: [
+    "https://courses.uit.edu.vn/",
+    "https://courses.uit.edu.vn/course/*",
+    "https://courses.uit.edu.vn/user/*",
+    "https://courses.uit.edu.vn/mod/assign/*",
+    "https://courses.uit.edu.vn/mod/url/*",
+    "https://courses.uit.edu.vn/mod/forum/*",
+    "https://courses.uit.edu.vn/calendar/view.php*",
+    "https://courses.uit.edu.vn/enrol/index.php*"
+  ],
   all_frames: true
 }
 
