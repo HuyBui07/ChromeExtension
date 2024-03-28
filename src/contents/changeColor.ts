@@ -45,16 +45,17 @@ const storage = new Storage({
 
 storage.get("currentPallette").then((pallette: any) => {
   if (pallette) {
+    console.log("Pallette found", pallette)
     changeElementColor(pallette)
   }
 })
 //Watch current pallete
 storage.watch({
   currentPallette: (c) => {
-    if (c.newValue) {
-      changeElementColor(c.newValue)
-    } else {
+    if (c.newValue === null) {
       undoChangeElementColor()
+    } else {
+      changeElementColor(c.newValue)
     }
   }
 })

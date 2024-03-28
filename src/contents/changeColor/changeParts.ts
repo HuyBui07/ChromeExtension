@@ -5,6 +5,11 @@ function changeElementColor(color: any) {
     undoChangeElementColor()
     return
   }
+  //Remove old style
+  const styleElements = document.querySelectorAll("#modified-color")
+  styleElements.forEach((el) => {
+    el.remove()
+  })
   const css = generateCSS(color)
   const styleElement = document.createElement("style")
   styleElement.id = "modified-color"
@@ -13,7 +18,6 @@ function changeElementColor(color: any) {
 }
 
 function undoChangeElementColor() {
-  //Remove the style element
   const styleElement = document.getElementById("modified-color")
   if (styleElement) {
     styleElement.remove()
