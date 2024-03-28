@@ -3,7 +3,10 @@ import type { PlasmoCSConfig } from "plasmo"
 import { relayMessage } from "@plasmohq/messaging"
 import { Storage } from "@plasmohq/storage"
 
-import { changeElementColor } from "./changeColor/changeParts"
+import {
+  changeElementColor,
+  undoChangeElementColor
+} from "./changeColor/changeParts"
 import { adjust, storeOriginalColor } from "./changeColor/utils"
 
 export const config: PlasmoCSConfig = {
@@ -33,17 +36,17 @@ const storage = new Storage({
 storeOriginalColor()
 
 storage.get("currentPallette").then((pallette: any) => {
-  if (!pallette) {
-    console.log("No pallette found, setting to white")
-  } else {
-    console.log("Pallette found: ", pallette)
+  if (pallette) {
     changeElementColor(pallette)
   }
 })
 //Watch current pallete
 storage.watch({
   currentPallette: (c) => {
-    //Change body
-    changeElementColor(c.newValue || "white")
+    if (c.newValue) {
+      changeElementColor(c.newValue)
+    } else {
+      undoChangeElementColor()
+    }
   }
 })
