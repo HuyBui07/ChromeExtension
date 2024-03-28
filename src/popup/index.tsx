@@ -25,7 +25,9 @@ function IndexPopup() {
       backgroundColor: "#010104",
       primaryColor: "#3A31D8",
       secondaryColor: "#020024",
-      accentColor: "#0600C2"
+      accentColor: "#0600C2",
+      dangerColor: "#8B0000",
+      successColor: "#008000"
     })
   }
 
