@@ -13,7 +13,7 @@ export const config: PlasmoCSConfig = {
   matches: ["https://courses.uit.edu.vn/"],
   all_frames: true
 }
-//TODO: refactor to use storage
+
 //List of elements to change color. Same line means they have the same color. Also consider border color
 //  card background-color, .block background-color, #region-main background-color, .navbar-bootswatch background-color, dropdown-menu background-color
 // popover background-color (actual body bg), popover-header background-color, popover-body background-color
@@ -33,7 +33,6 @@ export const config: PlasmoCSConfig = {
 const storage = new Storage({
   area: "local"
 })
-storeOriginalColor()
 
 storage.get("currentPallette").then((pallette: any) => {
   if (pallette) {
