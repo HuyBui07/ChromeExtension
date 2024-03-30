@@ -3,14 +3,26 @@ import type { PlasmoCSConfig } from "plasmo"
 import { relayMessage } from "@plasmohq/messaging"
 import { Storage } from "@plasmohq/storage"
 
-import { changeElementColor } from "./changeColor/changeParts"
+import {
+  changeElementColor,
+  undoChangeElementColor
+} from "./changeColor/changeParts"
 import { adjust, storeOriginalColor } from "./changeColor/utils"
 
 export const config: PlasmoCSConfig = {
-  matches: ["https://courses.uit.edu.vn/"],
+  matches: [
+    "https://courses.uit.edu.vn/",
+    "https://courses.uit.edu.vn/course/*",
+    "https://courses.uit.edu.vn/user/*",
+    "https://courses.uit.edu.vn/mod/assign/*",
+    "https://courses.uit.edu.vn/mod/url/*",
+    "https://courses.uit.edu.vn/mod/forum/*",
+    "https://courses.uit.edu.vn/calendar/view.php*",
+    "https://courses.uit.edu.vn/enrol/index.php*"
+  ],
   all_frames: true
 }
-//TODO: refactor to use storage
+
 //List of elements to change color. Same line means they have the same color. Also consider border color
 //  card background-color, .block background-color, #region-main background-color, .navbar-bootswatch background-color, dropdown-menu background-color
 // popover background-color (actual body bg), popover-header background-color, popover-body background-color
@@ -30,20 +42,20 @@ export const config: PlasmoCSConfig = {
 const storage = new Storage({
   area: "local"
 })
-storeOriginalColor()
 
 storage.get("currentPallette").then((pallette: any) => {
-  if (!pallette) {
-    console.log("No pallette found, setting to white")
-  } else {
-    console.log("Pallette found: ", pallette)
+  if (pallette) {
+    console.log("Pallette found", pallette)
     changeElementColor(pallette)
   }
 })
 //Watch current pallete
 storage.watch({
   currentPallette: (c) => {
-    //Change body
-    changeElementColor(c.newValue || "white")
+    if (c.newValue === null) {
+      undoChangeElementColor()
+    } else {
+      changeElementColor(c.newValue)
+    }
   }
 })

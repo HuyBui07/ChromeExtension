@@ -6,158 +6,132 @@ import { sendToBackground } from "@plasmohq/messaging"
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
 
-//Pallete 1 - Text Color: #EBE9FC, Background Color: #010104, Primary Color: #3A31D8, Secondary Color: #020024, Accent Color: #0600C2
-//Default pallete - set all to null
+import themes from "../constants/colorThemes"
 
 function IndexPopup() {
   const storage = new Storage({ area: "local" })
 
-  const [currentPalette, setCurrentPalette, { setStoreValue }] = useStorage({
-    key: "currentPalette",
+  const [currentPallette, setCurrentPallette, { setStoreValue }] = useStorage({
+    key: "currentPallette",
     instance: storage
   })
+  const storedThemeName =
+    currentPallette && currentPallette.name ? currentPallette.name : "Default"
+  useEffect(() => {
+    console.log("currentPallette", currentPallette)
+  }, [currentPallette])
 
-  const setColors = async () => {
-    await storage.set("currentPallette", {
-      textColor: "#EBE9FC",
-      backgroundColor: "#010104",
-      primaryColor: "#3A31D8",
-      secondaryColor: "#020024",
-      accentColor: "#0600C2"
-    })
-  }
-
-  const resetColors = async () => {
-    const originalPalette = await storage.get("originalPalette")
-    if (originalPalette) {
-      await storage.set("currentPallette", originalPalette)
-    } else {
-      await storage.set("currentPallette", {
-        textColor: null,
-        backgroundColor: null,
-        primaryColor: null,
-        secondaryColor: null,
-        accentColor: null
+  const setTheme = async (themeName) => {
+    if (themes[themeName] === null || themeName === "Default") {
+      console.log("setting null")
+      await storage.set("currentPallette", null).then(() => {
+        setCurrentPallette(null)
       })
+      return
     }
-  }
-  const handleClick = () => {
-    chrome.storage.sync.set({ draculaTheme: true }, () => {
-      console.log('The "draculaTheme" setting has been saved.')
-    })
 
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, { message: "color_change" })
-    })
-  }
-
-  const handleDelete = () => {
-    chrome.storage.sync.set({ draculaTheme: false }, () => {
-      console.log('The "draculaTheme" setting has been deleted.')
-    })
-
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, { message: "revert_changes" })
-    })
+    await storage.set("currentPallette", { ...themes[themeName] })
+    setCurrentPallette({ ...themes[themeName] })
   }
 
   return (
-    <div
-      style={{
-        padding: 16,
-        height: 400,
-        width: 300,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between"
-      }}>
-      <button onClick={setColors}>Set color</button>
-      <button onClick={resetColors}>Reset colors</button>
-      <button onClick={handleClick} className="button mb-9">
-        Dracula
-      </button>
-      <button onClick={handleDelete} className="button">
-        Delete theme
-      </button>
-      <div
-        style={{
-          marginBottom: 20,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between"
-        }}>
-        <div>Current text color: {currentPalette?.textColor}</div>
-        <div
-          style={{
-            width: 10,
-            height: 10,
-            backgroundColor: currentPalette?.textColor
+    <div className="popup-container">
+      <div className="popup-header">Select Theme:</div>
+      <div className="theme-select">
+        <select
+          onChange={(e) => {
+            setTheme(e.target.value)
           }}
-        />
+          value={storedThemeName}>
+          {Object.keys(themes).map((themeName) => (
+            <option key={themeName} value={themeName}>
+              {themeName}
+            </option>
+          ))}
+        </select>
       </div>
-      <div
-        style={{
-          marginBottom: 20,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between"
-        }}>
-        <div>Current background color: {currentPalette?.backgroundColor}</div>
-        <div
-          style={{
-            width: 10,
-            height: 10,
-            backgroundColor: currentPalette?.backgroundColor
-          }}
-        />
-      </div>
-      <div
-        style={{
-          marginBottom: 20,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between"
-        }}>
-        <div>Current primary color: {currentPalette?.primaryColor}</div>
-        <div
-          style={{
-            width: 10,
-            height: 10,
-            backgroundColor: currentPalette?.primaryColor
-          }}
-        />
-      </div>
-      <div
-        style={{
-          marginBottom: 10,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between"
-        }}>
-        <div>Current secondary color: {currentPalette?.secondaryColor}</div>
-        <div
-          style={{
-            width: 10,
-            height: 10,
-            backgroundColor: currentPalette?.secondaryColor
-          }}
-        />
-      </div>
-      <div
-        style={{
-          marginBottom: 10,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between"
-        }}>
-        <div>Current accent color: {currentPalette?.accentColor}</div>
-        <div
-          style={{
-            width: 10,
-            height: 10,
-            backgroundColor: currentPalette?.accentColor
-          }}
-        />
+
+      <div className="popup-content">
+        {currentPallette === null || currentPallette === undefined ? (
+          <div className="color-text">Palette not set</div>
+        ) : (
+          <>
+            <div className="color-section">
+              <div className="theme-option">
+                <div
+                  className="color-box"
+                  style={{ backgroundColor: currentPallette.textColor }}></div>
+                <div className="color-text">
+                  Text Color: {currentPallette.textColor}
+                </div>
+              </div>
+            </div>
+            <div className="color-section">
+              <div className="theme-option">
+                <div
+                  className="color-box"
+                  style={{
+                    backgroundColor: currentPallette.backgroundColor
+                  }}></div>
+                <div className="color-text">
+                  Background Color: {currentPallette.backgroundColor}
+                </div>
+              </div>
+            </div>
+            <div className="color-section">
+              <div className="theme-option">
+                <div
+                  className="color-box"
+                  style={{
+                    backgroundColor: currentPallette.primaryColor
+                  }}></div>
+                <div className="color-text">
+                  Primary Color: {currentPallette.primaryColor}
+                </div>
+              </div>
+              <div className="theme-option">
+                <div
+                  className="color-box"
+                  style={{
+                    backgroundColor: currentPallette.secondaryColor
+                  }}></div>
+                <div className="color-text">
+                  Secondary Color: {currentPallette.secondaryColor}
+                </div>
+              </div>
+              <div className="theme-option">
+                <div
+                  className="color-box"
+                  style={{
+                    backgroundColor: currentPallette.accentColor
+                  }}></div>
+                <div className="color-text">
+                  Accent Color: {currentPallette.accentColor}
+                </div>
+              </div>
+              <div className="theme-option">
+                <div
+                  className="color-box"
+                  style={{
+                    backgroundColor: currentPallette.dangerColor
+                  }}></div>
+                <div className="color-text">
+                  Danger Color: {currentPallette.dangerColor}
+                </div>
+              </div>
+              <div className="theme-option">
+                <div
+                  className="color-box"
+                  style={{
+                    backgroundColor: currentPallette.successColor
+                  }}></div>
+                <div className="color-text">
+                  Success Color: {currentPallette.successColor}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
