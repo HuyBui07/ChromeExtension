@@ -1,6 +1,8 @@
+import { create } from "domain"
 import type { PlasmoCSConfig } from "plasmo"
 import React, { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
+import { createRoot } from "react-dom/client"
 
 //components
 import CourseNote from "~src/components/CourseNote"
@@ -52,10 +54,8 @@ const CourseNotesCS = () => {
       if (!courseElement.classList.contains("paging"))
         courseElement.appendChild(buttonDiv)
 
-      ReactDOM.render(
-        <OpenNotesButton courseId={courseId} courseName={courseName} />,
-        buttonDiv
-      )
+      const root = createRoot(buttonDiv)
+      root.render(<OpenNotesButton courseId={courseId} courseName={courseName} />)
     }
   })
 }

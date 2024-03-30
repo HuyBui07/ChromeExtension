@@ -11,6 +11,21 @@ const OrganizeCoursesCS = () => {
     //get the branch that contains the program
     const educationalProgram = document.getElementsByClassName("depth_3")[6]
 
+    //check if the latest normal program have any courses
+    const normalProgram = document.getElementsByClassName("depth_3")[7]
+    const date = new Date()
+    const year = date.getFullYear()
+    let checkSemester = ""
+    if (date.getMonth() < 6) {
+      checkSemester = "Học kỳ 2 - (" + (year - 1) + "-" + year + ")"
+    } else {
+      const year = date.getFullYear()
+      checkSemester = "Học kỳ 1 - (" + year + "-" + (year + 1) + ")"
+    }
+
+    const isLatestSemesterNormal =
+      normalProgram.getElementsByTagName("span")[0].innerHTML === checkSemester
+
     //get the latest semester
     const latestSemester = educationalProgram.getElementsByTagName("li")[0]
 
@@ -23,6 +38,18 @@ const OrganizeCoursesCS = () => {
       const course = courses[i]
       const courseName = course.innerHTML
       courseNames.push(courseName)
+    }
+
+    if (isLatestSemesterNormal) {
+      //get the courses in the normal program
+      const normalCourses = normalProgram.getElementsByTagName("a")
+
+      //get the course names
+      for (let i = 0; i < normalCourses.length; i++) {
+        const course = normalCourses[i]
+        const courseName = course.innerHTML
+        courseNames.push(courseName)
+      }
     }
 
     // Get the div that contains all different courses
