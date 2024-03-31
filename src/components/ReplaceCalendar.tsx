@@ -15,7 +15,7 @@ const ReplaceCalendar = ({ deadlines }: { deadlines: Deadline[] }) => {
   const pastDeadlines = deadlines.filter(
     (deadline) =>
       new Date(deadline.year, deadline.month - 1, deadline.day) < today
-  )
+  ).reverse()
 
   return (
     <>
