@@ -3,5 +3,13 @@ module.exports = {
   mode: "jit",
   darkMode: "class",
   content: ["./**/*.tsx"],
-  plugins: []
+  plugins: [],
+  theme: {
+    extend: {
+      colors: {
+        overdue: "#E93737",
+        upcoming: "#3B774F"
+      }
+    }
+  }
 }
