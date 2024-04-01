@@ -1,11 +1,7 @@
 import { create } from "domain"
 import type { PlasmoCSConfig } from "plasmo"
 import React, { useEffect, useState } from "react"
-import ReactDOM from "react-dom"
 import { createRoot } from "react-dom/client"
-
-//components
-import CourseNote from "~src/components/CourseNote"
 
 export const config: PlasmoCSConfig = {
   matches: ["https://courses.uit.edu.vn/"],
@@ -19,12 +15,14 @@ const CourseNotesCS = () => {
     )[0]
 
     // Get all course elements in the div
-    const courseElements = Array.from(coursesDiv.children)
-    console.log(courseElements[0])
+    const courseElements = Array.from(coursesDiv.children).filter((child) => {
+      return child.classList.contains("coursebox")
+    })
 
     for (let courseElement of courseElements as HTMLElement[]) {
       //redefine course box structure for styling
       const info = courseElement.querySelector(".info")
+      console.log(info instanceof Node)
       const content = courseElement.querySelector(".content")
 
       const courseBox = document.createElement("div")
@@ -55,7 +53,9 @@ const CourseNotesCS = () => {
         courseElement.appendChild(buttonDiv)
 
       const root = createRoot(buttonDiv)
-      root.render(<OpenNotesButton courseId={courseId} courseName={courseName} />)
+      root.render(
+        <OpenNotesButton courseId={courseId} courseName={courseName} />
+      )
     }
   })
 }
