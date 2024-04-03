@@ -27,17 +27,21 @@ const CourseFastSearchBar = () => {
   searchBar.replaceWith(input)
 
   input.addEventListener("input", () => {
+    const baseValue = input.value
     const value = input.value.toLowerCase()
     const courseBoxes = courseList.getElementsByClassName("coursebox")
     for (let i = 0; i < courseBoxes.length; i++) {
       const courseBox = courseBoxes[i] as HTMLElement
+      const baseCoursename = courseBox
+        .getElementsByClassName("coursename")[0]
+        .getElementsByTagName("a")[0].innerText
       const courseName = normalizeVietnamese(
         courseBox
           .getElementsByClassName("coursename")[0]
           .getElementsByTagName("a")[0].innerText
       )
 
-      if (courseName.includes(value)) {
+      if (courseName.includes(value) || baseCoursename.includes(baseValue)) {
         courseBox.style.display = "flex"
       } else {
         courseBox.style.display = "none"
