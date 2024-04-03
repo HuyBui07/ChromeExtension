@@ -35,12 +35,7 @@ const CourseFastSearchBar = () => {
       const baseCoursename = courseBox
         .getElementsByClassName("coursename")[0]
         .getElementsByTagName("a")[0].innerText
-      const courseName = normalizeVietnamese(
-        courseBox
-          .getElementsByClassName("coursename")[0]
-          .getElementsByTagName("a")[0].innerText
-      )
-
+      const courseName = normalizeVietnamese(baseCoursename)
       if (courseName.includes(value) || baseCoursename.includes(baseValue)) {
         courseBox.style.display = "flex"
       } else {
