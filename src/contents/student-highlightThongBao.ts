@@ -4,10 +4,41 @@ export const config: PlasmoCSConfig = {
   matches: ["https://student.uit.edu.vn/"],
   all_frames: true
 }
+const highlightDayOff = () => {
+  //Select the big block list
+  const list = document.querySelectorAll(
+    "#block-views-thongbao-baonghi-baobu-block .view-content .item-list ul li"
+  )
+
+  const today = new Date()
+  const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+
+  list.forEach((element) => {
+    const date = getElementDate(element as HTMLElement)
+    if (areDateEqual(date, today.toLocaleDateString("en-GB"))) {
+      element.classList.add("highlight-today")
+      //Declarative text
+      const text = document.createElement("span")
+      text.innerText = " - Hôm nay"
+      text.style.color = "red"
+      element.appendChild(text)
+    } else if (areDateEqual(date, tomorrow.toLocaleDateString("en-GB"))) {
+      element.classList.add("highlight-tomorrow")
+      //Declarative text
+      const text = document.createElement("span")
+      text.innerText = "- Ngày mai"
+      text.style.color = "yellow"
+    }
+  })
+  injectCss()
+}
+//Get the date from the element
 function getElementDate(element: HTMLElement) {
   const date = element.innerText.split("-")[1].trim()
   return date
 }
+//String as date comparison utility
 function areDateEqual(date1: string, date2: string) {
   const [day1, month1, year1] = date1.split("/").map(Number)
   const [day2, month2, year2] = date2.split("/").map(Number)
@@ -17,35 +48,8 @@ function areDateEqual(date1: string, date2: string) {
   const dateObj2 = new Date(year2, month2 - 1, day2)
   return dateObj1.getTime() === dateObj2.getTime()
 }
-const highlightDayOff = () => {
-  //Select #block-views-thongbao-baonghi-baobu-block content div view-content item-list ul li
-  const list = document.querySelectorAll(
-    "#block-views-thongbao-baonghi-baobu-block .view-content .item-list ul li"
-  )
-  //Highlight background color
-  const today = new Date()
-  const tomorrow = new Date()
-  tomorrow.setDate(tomorrow.getDate() + 1)
 
-  list.forEach((element) => {
-    const date = getElementDate(element as HTMLElement)
-    if (areDateEqual(date, today.toLocaleDateString("en-GB"))) {
-      element.classList.add("highlight-today")
-      const text = document.createElement("span")
-      text.innerText = " - Hôm nay"
-      text.style.color = "red"
-      element.appendChild(text)
-    } else if (areDateEqual(date, tomorrow.toLocaleDateString("en-GB"))) {
-      element.classList.add("highlight-tomorrow")
-      //Add some more text as
-      const text = document.createElement("span")
-      text.innerText = "- Ngày mai"
-      text.style.color = "yellow"
-    }
-  })
-  injectCss()
-}
-
+//Modular function to inject CSS. Modify this function to change the style
 const injectCss = () => {
   const style = document.createElement("style")
   style.innerHTML = `
@@ -57,7 +61,6 @@ const injectCss = () => {
   }
   `
   document.head.appendChild(style)
-  console.log("Injected CSS")
 }
 
 highlightDayOff()
