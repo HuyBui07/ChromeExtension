@@ -26,15 +26,6 @@ const highlightDayOff = () => {
   const today = new Date()
   const tomorrow = new Date()
   tomorrow.setDate(tomorrow.getDate() + 1)
-  //DD/MM/YYYY
-  console.log("Today in DD/MM/YYYY: |", today.toLocaleDateString("en-GB"), "|")
-
-  console.log("First element: ", list[0])
-  console.log(
-    'First element date: "',
-    getElementDate(list[0] as HTMLElement),
-    '"'
-  )
 
   list.forEach((element) => {
     const date = getElementDate(element as HTMLElement)
