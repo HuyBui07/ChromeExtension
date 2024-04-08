@@ -21,14 +21,16 @@ const highlightDayOff = () => {
       //Declarative text
       const text = document.createElement("span")
       text.innerText = " - Hôm nay"
-      text.style.color = "red"
+      text.classList.add("declarative-text")
+      text.classList.add("danger")
       element.appendChild(text)
     } else if (areDateEqual(date, tomorrow.toLocaleDateString("en-GB"))) {
       element.classList.add("highlight-tomorrow")
       //Declarative text
       const text = document.createElement("span")
       text.innerText = "- Ngày mai"
-      text.style.color = "yellow"
+      text.classList.add("declarative-text")
+      text.classList.add("warning")
     }
   })
   injectCss()
@@ -58,6 +60,17 @@ const injectCss = () => {
   }
   #block-views-thongbao-baonghi-baobu-block .view-content .item-list ul li.highlight-tomorrow {
     background-color: #ffffcc;
+  }
+  #block-views-thongbao-baonghi-baobu-block .view-content .item-list ul li .declarative-text {
+   
+    font-weight: bold;
+    margin-left: 5px;
+  }
+  span.danger {
+    color: red;
+  }
+  span.warning {
+    color: orange;
   }
   `
   document.head.appendChild(style)
