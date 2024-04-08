@@ -44,8 +44,6 @@ function getElementDate(element: HTMLElement) {
 function areDateEqual(date1: string, date2: string) {
   const [day1, month1, year1] = date1.split("/").map(Number)
   const [day2, month2, year2] = date2.split("/").map(Number)
-  console.log("Date 1: ", day1, month1, year1)
-  console.log("Date 2: ", day2, month2, year2)
   const dateObj1 = new Date(year1, month1 - 1, day1) // 0-indexed in Date object
   const dateObj2 = new Date(year2, month2 - 1, day2)
   return dateObj1.getTime() === dateObj2.getTime()
