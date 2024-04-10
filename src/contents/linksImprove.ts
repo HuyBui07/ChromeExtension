@@ -49,6 +49,27 @@ function linkComponent(link: { text: string; value: string }) {
   container.appendChild(linkElement)
   return container
 }
-
+function injectLinkStyle() {
+  const style = document.createElement("style")
+  style.innerHTML = `
+    .links-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .links-container a {
+      text-decoration: none;
+      color: #0056e0
+      padding: 5x;  
+      border-radius: 5px;
+      border: 1px solid #f0f0f0;
+    }
+    .links-container a:hover {
+      background-color: #f0f0f0;
+    }
+    `
+  document.head.appendChild(style)
+}
+injectLinkStyle()
 removeOldSelect()
 injectLinks()
