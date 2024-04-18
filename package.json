@@ -33,7 +33,8 @@
       "storage",
       "activeTab",
       "tabs",
-      "scripting"
+      "scripting",
+      "cookies"
     ],
     "host_permissions": [
       "https://*/*"
