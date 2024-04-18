@@ -38,7 +38,10 @@ const storeStudentSiteCookie = () => {
 }
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (tab.url === "https://student.uit.edu.vn/") {
+  if (
+    tab.url === "https://student.uit.edu.vn/" ||
+    RegExp("https://student.uit.edu.vn/user/login*").test(tab.url)
+  ) {
     storeStudentSiteCookie()
   }
 })

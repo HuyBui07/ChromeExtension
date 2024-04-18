@@ -5,7 +5,7 @@ import { Storage } from "@plasmohq/storage"
 export const config: PlasmoCSConfig = {
   matches: [
     "https://student.uit.edu.vn/",
-    "https://student.uit.edu.vn/user/login%26homepage/"
+    "https://student.uit.edu.vn/user/login*"
   ],
   all_frames: true
 }
