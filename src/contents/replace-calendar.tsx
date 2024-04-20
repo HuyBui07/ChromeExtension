@@ -26,18 +26,41 @@ const ReplaceCalendarCS = () => {
     userbutton.style.display = "flex"
     userbutton.style.alignItems = "center"
 
-    const ChangeCalendar = () => {
+    const ChangeCalendar = async () => {
       //get data
       const deadlines = document.getElementsByTagName("td")
       const deadlinesArr = []
+      const submittedDeadlines = JSON.parse(
+        localStorage.getItem("submittedDeadlines") || "[]"
+      )
       for (let i = 0; i < deadlines.length; i++) {
         const deadline = deadlines[i]
         if (deadline.className.includes("hasevent")) {
           const a = deadline.getElementsByTagName("a")[0]
           const eventName = deadline.getElementsByClassName("eventname")
+          const eventHref = deadline.querySelectorAll(
+            '[data-action="view-event"]'
+          )
           const eventList = []
           for (let j = 0; j < eventName.length; j++) {
-            eventList.push(eventName[j].innerHTML)
+            let submittedState = false
+            if (
+              submittedDeadlines.includes(eventHref[j].getAttribute("href"))
+            ) {
+              submittedState = true
+            } else {
+              submittedState = await ScanForSubmittedState(
+                eventHref[j].getAttribute("href")
+              )
+              if (submittedState) {
+                submittedDeadlines.push(eventHref[j].getAttribute("href"))
+              }
+            }
+            eventList.push({
+              href: eventHref[j].getAttribute("href"),
+              content: eventName[j].innerHTML,
+              submitted: submittedState
+            })
           }
           const addedDeadline: Deadline = {
             day: parseInt(a.getAttribute("data-day")),
@@ -50,6 +73,10 @@ const ReplaceCalendarCS = () => {
         }
       }
 
+      localStorage.setItem(
+        "submittedDeadlines",
+        JSON.stringify(submittedDeadlines)
+      )
       //render
       const targetElement = document.querySelectorAll(
         ".calendarmonth, .calendartable, .mb-0"
@@ -92,6 +119,14 @@ const ReplaceCalendarCS = () => {
   }, [])
 
   return null
+}
+
+const ScanForSubmittedState = async (href: string) => {
+  return await fetch(href).then(async (response) => {
+    const data = await response.text()
+    if (data.includes("submissionstatussubmitted")) return true
+    return false
+  })
 }
 
 export default ReplaceCalendarCS
