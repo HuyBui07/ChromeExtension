@@ -12,10 +12,12 @@ const ReplaceCalendar = ({ deadlines }: { deadlines: Deadline[] }) => {
       new Date(deadline.year, deadline.month - 1, deadline.day) >= today
   )
 
-  const pastDeadlines = deadlines.filter(
-    (deadline) =>
-      new Date(deadline.year, deadline.month - 1, deadline.day) < today
-  ).reverse()
+  const pastDeadlines = deadlines
+    .filter(
+      (deadline) =>
+        new Date(deadline.year, deadline.month - 1, deadline.day) < today
+    )
+    .reverse()
 
   return (
     <>
@@ -35,7 +37,15 @@ const ReplaceCalendar = ({ deadlines }: { deadlines: Deadline[] }) => {
                 {weekdays[date.getDay()]}, {item.day}/{item.month}/{item.year}
               </span>
               {item.eventList.map((event, index) => {
-                return <div key={index}>- {event}</div>
+                return (
+                  <div
+                    style={
+                      event.submitted ? { color: "green" } : { color: "red" }
+                    }
+                    key={index}>
+                    - {event.content}
+                  </div>
+                )
               })}
             </div>
           )
@@ -57,7 +67,7 @@ const ReplaceCalendar = ({ deadlines }: { deadlines: Deadline[] }) => {
                 {weekdays[date.getDay()]}, {item.day}/{item.month}/{item.year}
               </span>
               {item.eventList.map((event, index) => {
-                return <div key={index}>- {event}</div>
+                return <div key={index}>- {event.content}</div>
               })}
             </div>
           )
