@@ -33,6 +33,9 @@ const ReplaceCalendarCS = () => {
       const submittedDeadlines = JSON.parse(
         localStorage.getItem("submittedDeadlines") || "[]"
       )
+      const unsubmittedDeadlines = JSON.parse(
+        localStorage.getItem("unsubmitetDeadlines") || "[]"
+      )
       for (let i = 0; i < deadlines.length; i++) {
         const deadline = deadlines[i]
         if (deadline.className.includes("hasevent")) {
@@ -48,12 +51,18 @@ const ReplaceCalendarCS = () => {
               submittedDeadlines.includes(eventHref[j].getAttribute("href"))
             ) {
               submittedState = true
+            } else if (
+              unsubmittedDeadlines.includes(eventHref[j].getAttribute("href"))
+            ) {
+              submittedState = false
             } else {
               submittedState = await ScanForSubmittedState(
                 eventHref[j].getAttribute("href")
               )
               if (submittedState) {
                 submittedDeadlines.push(eventHref[j].getAttribute("href"))
+              } else {
+                unsubmittedDeadlines.push(eventHref[j].getAttribute("href"))
               }
             }
             eventList.push({
@@ -76,6 +85,10 @@ const ReplaceCalendarCS = () => {
       localStorage.setItem(
         "submittedDeadlines",
         JSON.stringify(submittedDeadlines)
+      )
+      localStorage.setItem(
+        "unsubmitetDeadlines",
+        JSON.stringify(unsubmittedDeadlines)
       )
       //render
       const targetElement = document.querySelectorAll(
