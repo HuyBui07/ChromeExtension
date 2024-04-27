@@ -30,23 +30,17 @@ const ReplaceCalendar = ({ deadlines }: { deadlines: Deadline[] }) => {
               className="deadline-tile"
               key={index}
               onClick={() => {
-                window.location.href =
-                  "/calendar/view.php?view=day&time=" + item.timestamp
+                window.location.href = item.href
               }}>
               <span className="font-bold">
                 {weekdays[date.getDay()]}, {item.day}/{item.month}/{item.year}
               </span>
-              {item.eventList.map((event, index) => {
-                return (
-                  <div
-                    style={
-                      event.submitted ? { color: "green" } : { color: "red" }
-                    }
-                    key={index}>
-                    - {event.content}
-                  </div>
-                )
-              })}
+
+              <div
+                style={item.submitted ? { color: "green" } : { color: "red" }}
+                key={index}>
+                - {item.content}
+              </div>
             </div>
           )
         })}
@@ -60,15 +54,13 @@ const ReplaceCalendar = ({ deadlines }: { deadlines: Deadline[] }) => {
               className="deadline-tile"
               key={index}
               onClick={() => {
-                window.location.href =
-                  "/calendar/view.php?view=day&time=" + item.timestamp
+                window.location.href = item.href
               }}>
               <span className="font-bold">
                 {weekdays[date.getDay()]}, {item.day}/{item.month}/{item.year}
               </span>
-              {item.eventList.map((event, index) => {
-                return <div key={index}>- {event.content}</div>
-              })}
+
+              <div key={index}>- {item.content}</div>
             </div>
           )
         })}

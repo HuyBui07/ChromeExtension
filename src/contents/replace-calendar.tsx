@@ -27,25 +27,28 @@ const ReplaceCalendarCS = () => {
     userbutton.style.alignItems = "center"
 
     const ChangeCalendar = async () => {
-      //get data
-      const deadlines = document.getElementsByTagName("td")
-      const deadlinesArr = []
+      //get the deadlines from the calendar
+      const dates = document.getElementsByTagName("td")
+      let deadlinesArr = []
+
+      //get the submitted and unsubmitted deadlines from the local storage
       const submittedDeadlines = JSON.parse(
         localStorage.getItem("submittedDeadlines") || "[]"
       )
       const unsubmittedDeadlines = JSON.parse(
-        localStorage.getItem("unsubmitetDeadlines") || "[]"
+        localStorage.getItem("unsubmittedDeadlines") || "[]"
       )
-      for (let i = 0; i < deadlines.length; i++) {
-        const deadline = deadlines[i]
-        if (deadline.className.includes("hasevent")) {
-          const a = deadline.getElementsByTagName("a")[0]
-          const eventName = deadline.getElementsByClassName("eventname")
-          const eventHref = deadline.querySelectorAll(
-            '[data-action="view-event"]'
-          )
-          const eventList = []
+
+      //the check if a date have an event and check for its submitted state
+      for (let i = 0; i < dates.length; i++) {
+        const date = dates[i]
+        if (date.className.includes("hasevent")) {
+          const a = date.getElementsByTagName("a")[0]
+          const eventName = date.getElementsByClassName("eventname")
+          const eventHref = date.querySelectorAll('[data-action="view-event"]')
+          const deadlineList = []
           for (let j = 0; j < eventName.length; j++) {
+            //check if the deadline is submitted or not
             let submittedState = false
             if (
               submittedDeadlines.includes(eventHref[j].getAttribute("href"))
@@ -65,20 +68,18 @@ const ReplaceCalendarCS = () => {
                 unsubmittedDeadlines.push(eventHref[j].getAttribute("href"))
               }
             }
-            eventList.push({
+            deadlineList.push({
+              day: parseInt(a.getAttribute("data-day")),
+              month: parseInt(a.getAttribute("data-month")),
+              year: parseInt(a.getAttribute("data-year")),
+              timestamp: parseInt(a.getAttribute("data-timestamp")),
               href: eventHref[j].getAttribute("href"),
               content: eventName[j].innerHTML,
               submitted: submittedState
             })
           }
-          const addedDeadline: Deadline = {
-            day: parseInt(a.getAttribute("data-day")),
-            month: parseInt(a.getAttribute("data-month")),
-            year: parseInt(a.getAttribute("data-year")),
-            timestamp: parseInt(a.getAttribute("data-timestamp")),
-            eventList: eventList
-          }
-          deadlinesArr.push(addedDeadline)
+
+          deadlinesArr = deadlinesArr.concat(deadlineList)
         }
       }
 
@@ -87,10 +88,11 @@ const ReplaceCalendarCS = () => {
         JSON.stringify(submittedDeadlines)
       )
       localStorage.setItem(
-        "unsubmitetDeadlines",
+        "unsubmittedDeadlines",
         JSON.stringify(unsubmittedDeadlines)
       )
-      //render
+
+      //replace old calendar with new deadline list
       const targetElement = document.querySelectorAll(
         ".calendarmonth, .calendartable, .mb-0"
       )[0]
@@ -101,6 +103,7 @@ const ReplaceCalendarCS = () => {
 
     ChangeCalendar()
 
+    //observer to check if the calendar is changed, if changed, call ChangeCalendar
     const observer = new MutationObserver(() => {
       if (
         document
@@ -143,3 +146,4 @@ const ScanForSubmittedState = async (href: string) => {
 }
 
 export default ReplaceCalendarCS
+

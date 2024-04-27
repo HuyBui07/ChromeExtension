@@ -3,10 +3,6 @@ export type Deadline = {
   month: number
   year: number
   timestamp: number
-  eventList: Event[]
-}
-
-type Event = {
   href: string
   content: string
   submitted: boolean
