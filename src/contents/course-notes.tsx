@@ -22,7 +22,6 @@ const CourseNotesCS = () => {
     for (let courseElement of courseElements as HTMLElement[]) {
       //redefine course box structure for styling
       const info = courseElement.querySelector(".info")
-      console.log(info instanceof Node)
       const content = courseElement.querySelector(".content")
 
       const courseBox = document.createElement("div")
