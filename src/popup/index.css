@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.deadline-tile {
+  @apply flex flex-col justify-center w-[90%] ml-auto mr-auto mt-2 mb-2 p-4 border-2 border-gray-300 rounded-xl;
+  @apply hover:bg-gray-300;
+  @apply cursor-pointer;
+}
+
+.upcoming {
+  @apply bg-[#0f6cbf];
+  @apply opacity-5;
+}
+
+.button {
+  @apply text-sm;
+  @apply bg-[#0f6cbf];
+  @apply text-white;
+  @apply p-2;
+  @apply rounded-lg;
+  @apply cursor-pointer;
+}
+.button-danger {
+  @apply text-sm;
+  @apply bg-red-500;
+  @apply text-white;
+  @apply p-2;
+  @apply rounded-lg;
+  @apply cursor-pointer;
+}
+.popup-container {
+  padding: 20px;
+  height: 400px;
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #f5f5f5; /* Light gray background */
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  overflow-y: auto;
+}
+
+.popup-header {
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #333; /* Dark gray text */
+}
+.theme-select-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5em;
+  font-size: 1.2em;
+  font-weight: 500;
+}
+
+.theme-select {
+  display: flex;
+  margin-bottom: 1em;
+}
+
+.color-box {
+  height: 12px;
+  width: 12px;
+  margin-right: 8px;
+  border: 1px solid #999; /* Gray border */
+}
+
+.color-text {
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: #555; /* Medium gray text */
+}
+
+.popup-content {
+  flex: 1;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+}
+
+.theme-option:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
+.fetch-news-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  flex-direction: row;
+  span {
+    font-size: 1.2em;
+    font-weight: 500;
+  }
+}
+.news-status {
+  color: #0f6cbf;
+  font-size: 1.2em;
+  font-weight: 500;
+}
+.news-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.news-item {
+  display: flex;
+  gap: 0.5em;
+}
+
+.news-item a {
+  color: #0f6cbf;
+  text-decoration: none;
+  font-weight: 400;
+  font-size: 1.2em;
+}
+
+.refresh-icon {
+  cursor: pointer;
+}
+
+.refresh-icon.loading svg {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}

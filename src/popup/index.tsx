@@ -1,26 +1,40 @@
 import { useEffect, useState } from "react"
 
-import "../../style.css"
+import "./index.css"
 
-import { sendToBackground } from "@plasmohq/messaging"
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
 
+import RefreshIcon from "~assets/refresh"
+
 import themes from "../constants/colorThemes"
+import { fetchDaaNews } from "./utils/fetchNews"
+import { shortenText } from "./utils/shortenText"
+
+interface NewsItem {
+  link: string
+  title: string
+}
 
 function IndexPopup() {
   const storage = new Storage({ area: "local" })
-
+  const [news, setNews] = useState([] as NewsItem[])
+  const [isFetchingNews, setIsFetchingNews] = useState(false)
   const [currentPallette, setCurrentPallette, { setStoreValue }] = useStorage({
     key: "currentPallette",
     instance: storage
   })
   const storedThemeName =
     currentPallette && currentPallette.name ? currentPallette.name : "Default"
+  //Todo: Implement source selection later for daa, student, oep
   useEffect(() => {
-    console.log("currentPallette", currentPallette)
-  }, [currentPallette])
+    setFromStorage()
+  }, [])
 
+  const setFromStorage = async () => {
+    const news = (await storage.get("daaNews")) as NewsItem[]
+    setNews(news)
+  }
   const setTheme = async (themeName) => {
     if (themes[themeName] === null || themeName === "Default") {
       console.log("setting null")
@@ -33,10 +47,17 @@ function IndexPopup() {
     await storage.set("currentPallette", { ...themes[themeName] })
     setCurrentPallette({ ...themes[themeName] })
   }
-
+  const requestRefreshStudentNew = async () => {
+    setIsFetchingNews(true)
+    const news: NewsItem[] = await fetchDaaNews()
+    setNews(news)
+    await storage.set("daaNews", news)
+    setIsFetchingNews(false)
+  }
   return (
     <div className="popup-container">
-      <div className="popup-header">Select Theme:</div>
+      <div className="popup-header">Ezuit</div>
+      <div className="theme-select-header">Select Theme</div>
       <div className="theme-select">
         <select
           onChange={(e) => {
@@ -52,86 +73,29 @@ function IndexPopup() {
       </div>
 
       <div className="popup-content">
-        {currentPallette === null || currentPallette === undefined ? (
-          <div className="color-text">Palette not set</div>
-        ) : (
-          <>
-            <div className="color-section">
-              <div className="theme-option">
-                <div
-                  className="color-box"
-                  style={{ backgroundColor: currentPallette.textColor }}></div>
-                <div className="color-text">
-                  Text Color: {currentPallette.textColor}
-                </div>
+        <div className="fetch-news-header">
+          <span>News</span>
+          <div
+            style={{ width: "20px", height: "20px" }}
+            onClick={requestRefreshStudentNew}>
+            <RefreshIcon isLoading={isFetchingNews} />
+          </div>
+        </div>
+        <div className="news-container">
+          {news.length > 0 && !isFetchingNews ? (
+            news.map((item) => (
+              <div key={item.link} className="news-item">
+                <a href={item.link} target="_blank">
+                  {shortenText(item.title, 30)}
+                </a>
               </div>
+            ))
+          ) : (
+            <div className="news-item news-status">
+              {isFetchingNews ? "Fetching News..." : "No News"}
             </div>
-            <div className="color-section">
-              <div className="theme-option">
-                <div
-                  className="color-box"
-                  style={{
-                    backgroundColor: currentPallette.backgroundColor
-                  }}></div>
-                <div className="color-text">
-                  Background Color: {currentPallette.backgroundColor}
-                </div>
-              </div>
-            </div>
-            <div className="color-section">
-              <div className="theme-option">
-                <div
-                  className="color-box"
-                  style={{
-                    backgroundColor: currentPallette.primaryColor
-                  }}></div>
-                <div className="color-text">
-                  Primary Color: {currentPallette.primaryColor}
-                </div>
-              </div>
-              <div className="theme-option">
-                <div
-                  className="color-box"
-                  style={{
-                    backgroundColor: currentPallette.secondaryColor
-                  }}></div>
-                <div className="color-text">
-                  Secondary Color: {currentPallette.secondaryColor}
-                </div>
-              </div>
-              <div className="theme-option">
-                <div
-                  className="color-box"
-                  style={{
-                    backgroundColor: currentPallette.accentColor
-                  }}></div>
-                <div className="color-text">
-                  Accent Color: {currentPallette.accentColor}
-                </div>
-              </div>
-              <div className="theme-option">
-                <div
-                  className="color-box"
-                  style={{
-                    backgroundColor: currentPallette.dangerColor
-                  }}></div>
-                <div className="color-text">
-                  Danger Color: {currentPallette.dangerColor}
-                </div>
-              </div>
-              <div className="theme-option">
-                <div
-                  className="color-box"
-                  style={{
-                    backgroundColor: currentPallette.successColor
-                  }}></div>
-                <div className="color-text">
-                  Success Color: {currentPallette.successColor}
-                </div>
-              </div>
-            </div>
-          </>
-        )}
+          )}
+        </div>
       </div>
     </div>
   )
