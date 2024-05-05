@@ -8,9 +8,10 @@ import { useStorage } from "@plasmohq/storage/hook"
 import RefreshIcon from "~assets/refresh"
 
 import themes from "../constants/colorThemes"
-import { fetchDaaNews } from "./utils/fetchNews"
+import { fetchDaaNews } from "./utils/newFetching/fetchDaaNews"
 import { shortenText } from "./utils/shortenText"
 
+const MAX_NEWS_ITEMS = 5
 interface NewsItem {
   link: string
   title: string
@@ -83,7 +84,7 @@ function IndexPopup() {
         </div>
         <div className="news-container">
           {news.length > 0 && !isFetchingNews ? (
-            news.map((item) => (
+            news.slice(0, MAX_NEWS_ITEMS).map((item) => (
               <div key={item.link} className="news-item">
                 <a href={item.link} target="_blank">
                   {shortenText(item.title, 30)}

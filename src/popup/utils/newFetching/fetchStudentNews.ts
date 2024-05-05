@@ -1,6 +1,6 @@
-const fetchDaaNews = async () => {
+const fetchStudentNews = async () => {
   const parser = new DOMParser()
-  const text = await fetch("https://student.uit.edu.vn/", {
+  const text = await fetch("https://daa.uit.edu.vn//", {
     method: "GET"
   }).then((res) => res.text())
 
@@ -22,4 +22,4 @@ const fetchDaaNews = async () => {
   return news
 }
 
-export { fetchDaaNews }
+export { fetchStudentNews }
