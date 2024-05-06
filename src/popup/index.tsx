@@ -6,7 +6,7 @@ import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
 
 import RefreshIcon from "~assets/refresh"
-import type { NewsItem } from "~src/types"
+import type { NewsItem, NewSource } from "~src/types"
 
 import themes from "../constants/colorThemes"
 import { DAANewSource } from "./utils/newFetching/newSources"
@@ -17,8 +17,15 @@ const TEXT_LIMIT = 30
 
 function IndexPopup() {
   const storage = new Storage({ area: "local" })
-  const [news, setNews] = useState([] as NewsItem[])
+  const [news, setNews] = useState([] as NewsItem[]) //To show
+  // Key: NewsType, Value: NewsItem[]
+  const [newsCached, setNewsCached] = useState(
+    {} as Record<string, NewsItem[]> | null
+  )
   const [isFetchingNews, setIsFetchingNews] = useState(false)
+  const [currentNewsSource, setCurrentNewsSource] = useState(DAANewSource)
+  const [currentNewType, setCurrentNewType] = useState(null)
+
   const [currentPallette, setCurrentPallette, { setStoreValue }] = useStorage({
     key: "currentPallette",
     instance: storage
@@ -42,22 +49,45 @@ function IndexPopup() {
   useEffect(() => {
     setFromStorage()
   }, [])
+  useEffect(() => {
+    onNewTypeChange(currentNewType)
+  }, [currentNewType])
+  const onNewTypeChange = async (newType) => {
+    if (currentNewType && newsCached) {
+      const news = await currentNewsSource.fetchFromStorage().then((news) => {
+        return news[currentNewType]
+      })
+      try {
+        setNews(news)
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  }
   const setFromStorage = async () => {
-    const news = await DAANewSource.fetchFromStorage()
-    setNews(news["Thong bao van bang 2"])
+    const defaultOption = currentNewsSource.sectionOptions[0]
+    const news = await currentNewsSource.fetchFromStorage()
+    setCurrentNewType(defaultOption)
+    setNewsCached(news)
+    setNews(news[defaultOption])
   }
 
   const requestRefreshStudentNew = async () => {
     setIsFetchingNews(true)
-    await DAANewSource.cleanStorage()
-    const news: NewsItem[] = await DAANewSource.fetch().then(
-      (news) => news["Thong bao van bang 2"]
-    )
-    // const news: NewsItem[] = await DAANewSource.fetchFromStorage().then(
-    //   (news) => (news ? news["Thong bao chung"] : [])
-    // )
-    setNews(news)
+
+    const newsObj = await currentNewsSource.fetch()
+    const defaultOption = currentNewsSource.sectionOptions[0]
+    setNewsCached(newsObj)
+    setCurrentNewType(defaultOption)
+    setNews(newsObj[defaultOption])
     setIsFetchingNews(false)
+  }
+  //Todo: set to choose default new source again after clean up
+  const cleanStorage = async () => {
+    await currentNewsSource.cleanStorage()
+    setNews([])
+    setNewsCached(null)
+    setCurrentNewType(null)
   }
   return (
     <div className="popup-container">
@@ -84,6 +114,27 @@ function IndexPopup() {
             style={{ width: "20px", height: "20px" }}
             onClick={requestRefreshStudentNew}>
             <RefreshIcon isLoading={isFetchingNews} />
+          </div>
+        </div>
+        <div className="news-source-type-select">
+          <select
+            onChange={(e) => {
+              setCurrentNewType(e.target.value)
+            }}
+            value={currentNewType}>
+            {DAANewSource.sectionOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+          <div>
+            <button
+              onClick={() => {
+                cleanStorage()
+              }}>
+              Clear
+            </button>
           </div>
         </div>
         <div className="news-container">
