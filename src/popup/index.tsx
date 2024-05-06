@@ -6,16 +6,14 @@ import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
 
 import RefreshIcon from "~assets/refresh"
+import type { NewsItem } from "~src/types"
 
 import themes from "../constants/colorThemes"
-import { fetchDaaNews } from "./utils/newFetching/fetchDaaNews"
+import { DAANewSource } from "./utils/newFetching/newSources"
 import { shortenText } from "./utils/shortenText"
 
 const MAX_NEWS_ITEMS = 5
-interface NewsItem {
-  link: string
-  title: string
-}
+const TEXT_LIMIT = 30
 
 function IndexPopup() {
   const storage = new Storage({ area: "local" })
@@ -28,14 +26,7 @@ function IndexPopup() {
   const storedThemeName =
     currentPallette && currentPallette.name ? currentPallette.name : "Default"
   //Todo: Implement source selection later for daa, student, oep
-  useEffect(() => {
-    setFromStorage()
-  }, [])
 
-  const setFromStorage = async () => {
-    const news = (await storage.get("daaNews")) as NewsItem[]
-    setNews(news)
-  }
   const setTheme = async (themeName) => {
     if (themes[themeName] === null || themeName === "Default") {
       console.log("setting null")
@@ -48,11 +39,24 @@ function IndexPopup() {
     await storage.set("currentPallette", { ...themes[themeName] })
     setCurrentPallette({ ...themes[themeName] })
   }
+  useEffect(() => {
+    setFromStorage()
+  }, [])
+  const setFromStorage = async () => {
+    const news = await DAANewSource.fetchFromStorage()
+    setNews(news["Thong bao van bang 2"])
+  }
+
   const requestRefreshStudentNew = async () => {
     setIsFetchingNews(true)
-    const news: NewsItem[] = await fetchDaaNews()
+    await DAANewSource.cleanStorage()
+    const news: NewsItem[] = await DAANewSource.fetch().then(
+      (news) => news["Thong bao van bang 2"]
+    )
+    // const news: NewsItem[] = await DAANewSource.fetchFromStorage().then(
+    //   (news) => (news ? news["Thong bao chung"] : [])
+    // )
     setNews(news)
-    await storage.set("daaNews", news)
     setIsFetchingNews(false)
   }
   return (
@@ -86,8 +90,8 @@ function IndexPopup() {
           {news.length > 0 && !isFetchingNews ? (
             news.slice(0, MAX_NEWS_ITEMS).map((item) => (
               <div key={item.link} className="news-item">
-                <a href={item.link} target="_blank">
-                  {shortenText(item.title, 30)}
+                <a href={DAANewSource.source + item.link} target="_blank">
+                  {shortenText(item.title, TEXT_LIMIT)}
                 </a>
               </div>
             ))
