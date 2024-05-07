@@ -9,12 +9,12 @@ import RefreshIcon from "~assets/refresh"
 import type { NewsItem, NewSource } from "~src/types"
 
 import themes from "../constants/colorThemes"
-import { DAANewSource } from "./utils/newFetching/newSources"
+import { DAANewSource, OEPNewSource } from "./utils/newFetching/newSources"
 import { shortenText } from "./utils/shortenText"
 
 const MAX_NEWS_ITEMS = 5
-const TEXT_LIMIT = 30
-
+const TEXT_LIMIT = 50
+const availableNewsSources = [DAANewSource, OEPNewSource]
 function IndexPopup() {
   const storage = new Storage({ area: "local" })
   const [news, setNews] = useState([] as NewsItem[]) //To show
@@ -23,7 +23,9 @@ function IndexPopup() {
     {} as Record<string, NewsItem[]> | null
   )
   const [isFetchingNews, setIsFetchingNews] = useState(false)
-  const [currentNewsSource, setCurrentNewsSource] = useState(DAANewSource)
+  const [currentNewsSource, setCurrentNewsSource] = useState(
+    availableNewsSources[0]
+  )
   const [currentNewType, setCurrentNewType] = useState(null)
 
   const [currentPallette, setCurrentPallette, { setStoreValue }] = useStorage({
@@ -46,12 +48,23 @@ function IndexPopup() {
     await storage.set("currentPallette", { ...themes[themeName] })
     setCurrentPallette({ ...themes[themeName] })
   }
+
   useEffect(() => {
     setFromStorage()
   }, [])
   useEffect(() => {
     onNewTypeChange(currentNewType)
   }, [currentNewType])
+  useEffect(() => {
+    onNewSourceChange(currentNewsSource)
+  }, [currentNewsSource])
+  const onNewSourceChange = async (newSource) => {
+    setCurrentNewsSource(newSource)
+    setNewsCached(null)
+    setNews([])
+    setCurrentNewType(null)
+    setFromStorage()
+  }
   const onNewTypeChange = async (newType) => {
     if (currentNewType && newsCached) {
       const news = await currentNewsSource.fetchFromStorage().then((news) => {
@@ -116,13 +129,29 @@ function IndexPopup() {
             <RefreshIcon isLoading={isFetchingNews} />
           </div>
         </div>
+        <div className="news-source-select">
+          <select
+            onChange={(e) => {
+              const newSource = availableNewsSources.find(
+                (source) => source.name === e.target.value
+              )
+              onNewSourceChange(newSource)
+            }}
+            value={currentNewsSource.name}>
+            {availableNewsSources.map((source) => (
+              <option key={source.name} value={source.name}>
+                {source.name}
+              </option>
+            ))}
+          </select>
+        </div>
         <div className="news-source-type-select">
           <select
             onChange={(e) => {
               setCurrentNewType(e.target.value)
             }}
             value={currentNewType}>
-            {DAANewSource.sectionOptions.map((option) => (
+            {currentNewsSource.sectionOptions.map((option) => (
               <option key={option} value={option}>
                 {option}
               </option>
