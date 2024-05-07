@@ -9,9 +9,10 @@ export const getOEPThongBaoChung = (doc: Document) => {
     const a = li.querySelector("a")
     const link = a?.getAttribute("href")
     const title = a?.innerText
-    const datePosted = a?.nextSibling?.textContent
-      ?.replace(/\s/g, "")
-      .replace("-", "")
+    //date is inside a span with class name "date" next to the a tag. Simply extract the text and remove ( & ) characters
+    const datePosted = a?.nextElementSibling?.textContent
+      ?.replace("( ", "")
+      .replace(" )", "")
     thongBaoChung.push({ link, title, datePosted })
   })
   return thongBaoChung
@@ -27,9 +28,9 @@ export const getOEPThongBaoNghiHocBu = (doc: Document) => {
     const a = li.querySelector("a")
     const link = a?.getAttribute("href")
     const title = a?.innerText
-    const datePosted = a?.nextSibling?.textContent
-      ?.replace(/\s/g, "")
-      .replace("-", "")
+
+    const datePosted = a?.nextElementSibling?.textContent
+
     thongBaoNghiHocBu.push({ link, title, datePosted })
   })
   return thongBaoNghiHocBu
@@ -45,9 +46,8 @@ export const getOEPChuongTrinhCLC = (doc: Document) => {
     const a = li.querySelector("a")
     const link = a?.getAttribute("href")
     const title = a?.innerText
-    const datePosted = a?.nextSibling?.textContent
-      ?.replace(/\s/g, "")
-      .replace("-", "")
+    const datePosted = a?.nextElementSibling?.textContent
+
     chuongTrinhCLC.push({ link, title, datePosted })
   })
   return chuongTrinhCLC
@@ -63,9 +63,8 @@ export const getOEPChuongTrinhTienTien = (doc: Document) => {
     const a = li.querySelector("a")
     const link = a?.getAttribute("href")
     const title = a?.innerText
-    const datePosted = a?.nextSibling?.textContent
-      ?.replace(/\s/g, "")
-      .replace("-", "")
+    const datePosted = a?.nextElementSibling?.textContent
+
     chuongTrinhTienTien.push({ link, title, datePosted })
   })
   return chuongTrinhTienTien
@@ -81,9 +80,8 @@ export const getOEPChuongTrinhTaiNang = (doc: Document) => {
     const a = li.querySelector("a")
     const link = a?.getAttribute("href")
     const title = a?.innerText
-    const datePosted = a?.nextSibling?.textContent
-      ?.replace(/\s/g, "")
-      .replace("-", "")
+    const datePosted = a?.nextElementSibling?.textContent
+
     chuongTrinhTaiNang.push({ link, title, datePosted })
   })
   return chuongTrinhTaiNang
@@ -100,8 +98,7 @@ export const getOEPChuongTrinhLienKet = (doc: Document) => {
     const link = a?.getAttribute("href")
     const title = a?.innerText
     const datePosted = a?.nextSibling?.textContent
-      ?.replace(/\s/g, "")
-      .replace("-", "")
+
     chuongTrinhLienKet.push({ link, title, datePosted })
   })
   return chuongTrinhLienKet
