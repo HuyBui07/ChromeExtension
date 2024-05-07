@@ -10,6 +10,7 @@ import type { NewsItem, NewSource } from "~src/types"
 
 import themes from "../constants/colorThemes"
 import { DAANewSource, OEPNewSource } from "./utils/newFetching/newSources"
+import { removeDayTime } from "./utils/newFetching/removeDayTime"
 import { shortenText } from "./utils/shortenText"
 
 const MAX_NEWS_ITEMS = 5
@@ -170,8 +171,9 @@ function IndexPopup() {
           {news.length > 0 && !isFetchingNews ? (
             news.slice(0, MAX_NEWS_ITEMS).map((item) => (
               <div key={item.link} className="news-item">
-                <a href={DAANewSource.source + item.link} target="_blank">
-                  {shortenText(item.title, TEXT_LIMIT)}
+                <a href={currentNewsSource.source + item.link} target="_blank">
+                  {shortenText(item.title, TEXT_LIMIT)} -{" "}
+                  {removeDayTime(item.datePosted)}
                 </a>
               </div>
             ))
