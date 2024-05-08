@@ -14,7 +14,7 @@ import { removeDayTime } from "./utils/newFetching/removeDayTime"
 import { shortenText } from "./utils/shortenText"
 
 const MAX_NEWS_ITEMS = 5
-const TEXT_LIMIT = 50
+const TEXT_LIMIT = 40
 const availableNewsSources = [DAANewSource, OEPNewSource]
 function IndexPopup() {
   const storage = new Storage({ area: "local" })
@@ -35,7 +35,6 @@ function IndexPopup() {
   })
   const storedThemeName =
     currentPallette && currentPallette.name ? currentPallette.name : "Default"
-  //Todo: Implement source selection later for daa, student, oep
 
   const setTheme = async (themeName) => {
     if (themes[themeName] === null || themeName === "Default") {
@@ -96,7 +95,7 @@ function IndexPopup() {
     setNews(newsObj[defaultOption])
     setIsFetchingNews(false)
   }
-  //Todo: set to choose default new source again after clean up
+
   const cleanStorage = async () => {
     await currentNewsSource.cleanStorage()
     setNews([])
@@ -106,7 +105,7 @@ function IndexPopup() {
   return (
     <div className="popup-container">
       <div className="popup-header">Ezuit</div>
-      <div className="theme-select-header">Select Theme</div>
+      {/* <div className="theme-select-header">Select Theme</div>
       <div className="theme-select">
         <select
           onChange={(e) => {
@@ -119,69 +118,117 @@ function IndexPopup() {
             </option>
           ))}
         </select>
+      </div> */}
+      <div className="popup-content">
+        <div className="deadlines-header">Deadlines</div>
+        <div className="deadlines-container">
+          <div className="deadline-item">
+            <span className="deadline-item-name">Assignment 1</span>
+            <span>Due: 12/12/2021</span>
+            <span>
+              Status:{" "}
+              <span className="deadline-item-status">Due in 2 days</span>
+            </span>
+
+            <div className="deadline-item-divider">
+              <div></div>
+            </div>
+          </div>
+          <div className="deadline-item">
+            <span className="deadline-item-name">Assignment 2</span>
+            <span>Due: 12/12/2021</span>
+            <span>
+              Status: <span className="deadline-item-status-late">Overdue</span>
+            </span>
+            <div className="deadline-item-divider">
+              <div></div>
+            </div>
+          </div>
+          <div className="deadline-item">
+            <span className="deadline-item-name">Assignment 3</span>
+            <span>Due: 12/12/2021</span>
+            <span>
+              Status:{" "}
+              <span className="deadline-item-status-submitted">Submitted</span>
+            </span>
+            <div className="deadline-item-divider">
+              <div></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="popup-content">
-        <div className="fetch-news-header">
-          <span>News</span>
+        <div className="news-header">News</div>
+        <div className="news-options">
+          <div className="news-source-select">
+            <select
+              onChange={(e) => {
+                const newSource = availableNewsSources.find(
+                  (source) => source.name === e.target.value
+                )
+                onNewSourceChange(newSource)
+              }}
+              value={currentNewsSource.name}>
+              {availableNewsSources.map((source) => (
+                <option key={source.name} value={source.name}>
+                  {source.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="news-source-type-select">
+            <select
+              onChange={(e) => {
+                setCurrentNewType(e.target.value)
+              }}
+              value={currentNewType}>
+              {currentNewsSource.sectionOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
           <div
+            className="news-refresh"
             style={{ width: "20px", height: "20px" }}
             onClick={requestRefreshStudentNew}>
             <RefreshIcon isLoading={isFetchingNews} />
           </div>
         </div>
-        <div className="news-source-select">
-          <select
-            onChange={(e) => {
-              const newSource = availableNewsSources.find(
-                (source) => source.name === e.target.value
-              )
-              onNewSourceChange(newSource)
-            }}
-            value={currentNewsSource.name}>
-            {availableNewsSources.map((source) => (
-              <option key={source.name} value={source.name}>
-                {source.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="news-source-type-select">
-          <select
-            onChange={(e) => {
-              setCurrentNewType(e.target.value)
-            }}
-            value={currentNewType}>
-            {currentNewsSource.sectionOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-          <div>
-            <button
-              onClick={() => {
-                cleanStorage()
-              }}>
-              Clear
-            </button>
-          </div>
-        </div>
         <div className="news-container">
           {news.length > 0 && !isFetchingNews ? (
-            news.slice(0, MAX_NEWS_ITEMS).map((item) => (
-              <div key={item.link} className="news-item">
-                <a href={currentNewsSource.source + item.link} target="_blank">
-                  {shortenText(item.title, TEXT_LIMIT)} -{" "}
-                  {removeDayTime(item.datePosted)}
+            <>
+              {news.slice(0, MAX_NEWS_ITEMS).map((item) => (
+                <div key={item.link} className="news-item">
+                  <a
+                    href={currentNewsSource.source + item.link}
+                    target="_blank">
+                    {shortenText(item.title, TEXT_LIMIT)} -{" "}
+                    {removeDayTime(item.datePosted)}
+                  </a>
+                </div>
+              ))}
+              <div className="more-news">
+                <a href={currentNewsSource.source} target="_blank">
+                  View More
                 </a>
               </div>
-            ))
+            </>
           ) : (
-            <div className="news-item news-status">
+            <div className="news-item news-status-fetching">
               {isFetchingNews ? "Fetching News..." : "No News"}
             </div>
           )}
+        </div>
+
+        <div className="more-options-container">
+          <div className="more-options">
+            <a href="options.html" target="_blank">
+              More Options
+            </a>
+          </div>
         </div>
       </div>
     </div>
