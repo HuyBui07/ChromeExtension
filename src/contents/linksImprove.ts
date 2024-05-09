@@ -1,5 +1,8 @@
 import type { PlasmoCSConfig } from "plasmo"
 
+import { StudentImproveLinksSettingsName } from "./../options/components/students-daa/studentImproveLinkSetting"
+import SettingWatcher from "./generalSettingsWatcher"
+
 export const config: PlasmoCSConfig = {
   matches: ["https://student.uit.edu.vn/"],
   all_frames: true
@@ -70,6 +73,11 @@ function injectLinkStyle() {
     `
   document.head.appendChild(style)
 }
-injectLinkStyle()
-removeOldSelect()
-injectLinks()
+
+SettingWatcher.get(StudentImproveLinksSettingsName).then((settings) => {
+  if (settings === "true") {
+    injectLinkStyle()
+    removeOldSelect()
+    injectLinks()
+  }
+})
