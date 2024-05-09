@@ -3,60 +3,60 @@ import type { PlasmoCSConfig } from "plasmo"
 import React, { useEffect, useState } from "react"
 import { createRoot } from "react-dom/client"
 
+import { CourseNoteSettingName } from "~src/options/components/moodle/courseNoteOptions"
+
+import SettingWatcher from "./generalSettingsWatcher"
+
 export const config: PlasmoCSConfig = {
   matches: ["https://courses.uit.edu.vn/"],
   all_frames: true
 }
 
 const CourseNotesCS = () => {
-  useEffect(() => {
-    const coursesDiv = document.getElementsByClassName(
-      "frontpage-course-list-enrolled"
-    )[0]
+  const coursesDiv = document.getElementsByClassName(
+    "frontpage-course-list-enrolled"
+  )[0]
 
-    // Get all course elements in the div
-    const courseElements = Array.from(coursesDiv.children).filter((child) => {
-      return child.classList.contains("coursebox")
-    })
-
-    for (let courseElement of courseElements as HTMLElement[]) {
-      //redefine course box structure for styling
-      const info = courseElement.querySelector(".info")
-      const content = courseElement.querySelector(".content")
-
-      const courseBox = document.createElement("div")
-
-      courseBox.appendChild(info)
-      courseBox.appendChild(content)
-
-      // Clear the courseElement
-      while (courseElement.firstChild) {
-        courseElement.removeChild(courseElement.firstChild)
-      }
-
-      // Append the courseBox to the courseElement
-      courseElement.appendChild(courseBox)
-      courseElement.style.display = "flex"
-      courseElement.style.flexDirection = "row"
-      courseElement.style.alignItems = "center"
-
-      //assign button to each course
-      const courseId = courseElement.getAttribute("data-courseid")
-      const courseName = courseElement.querySelector("h3").textContent
-
-      const buttonDiv = document.createElement("div")
-      buttonDiv.style.marginLeft = "auto"
-
-      // Append the new div to the course element
-      if (!courseElement.classList.contains("paging"))
-        courseElement.appendChild(buttonDiv)
-
-      const root = createRoot(buttonDiv)
-      root.render(
-        <OpenNotesButton courseId={courseId} courseName={courseName} />
-      )
-    }
+  // Get all course elements in the div
+  const courseElements = Array.from(coursesDiv.children).filter((child) => {
+    return child.classList.contains("coursebox")
   })
+
+  for (let courseElement of courseElements as HTMLElement[]) {
+    //redefine course box structure for styling
+    const info = courseElement.querySelector(".info")
+    const content = courseElement.querySelector(".content")
+
+    const courseBox = document.createElement("div")
+
+    courseBox.appendChild(info)
+    courseBox.appendChild(content)
+
+    // Clear the courseElement
+    while (courseElement.firstChild) {
+      courseElement.removeChild(courseElement.firstChild)
+    }
+
+    // Append the courseBox to the courseElement
+    courseElement.appendChild(courseBox)
+    courseElement.style.display = "flex"
+    courseElement.style.flexDirection = "row"
+    courseElement.style.alignItems = "center"
+
+    //assign button to each course
+    const courseId = courseElement.getAttribute("data-courseid")
+    const courseName = courseElement.querySelector("h3").textContent
+
+    const buttonDiv = document.createElement("div")
+    buttonDiv.style.marginLeft = "auto"
+
+    // Append the new div to the course element
+    if (!courseElement.classList.contains("paging"))
+      courseElement.appendChild(buttonDiv)
+
+    const root = createRoot(buttonDiv)
+    root.render(<OpenNotesButton courseId={courseId} courseName={courseName} />)
+  }
 }
 
 const OpenNotesButton = ({ courseId, courseName }) => {
@@ -105,4 +105,17 @@ const OpenNotesButton = ({ courseId, courseName }) => {
   )
 }
 
-export default CourseNotesCS
+SettingWatcher.get(CourseNoteSettingName).then((courseNoteEnabled: any) => {
+  console.log("Initial course note setting: ", courseNoteEnabled)
+  if (courseNoteEnabled === "true") {
+    CourseNotesCS()
+  }
+})
+
+SettingWatcher.watch({
+  [CourseNoteSettingName]: (courseNoteEnabled: any) => {
+    if (courseNoteEnabled.newValue === "true") {
+      CourseNotesCS()
+    }
+  }
+})
