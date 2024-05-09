@@ -8,9 +8,14 @@ export const config: PlasmoCSConfig = {
 }
 
 const storage = new Storage()
-
+const searchBarClass = "modified-search-bar"
 let searchBarStyle = ""
-
+function changeSearchBarStyle() {
+  console.log("Change search bar style")
+  const style = document.createElement("style")
+  style.innerHTML = searchBarStyle
+  document.head.appendChild(style)
+}
 function generateStyle() {
   const primaryColor = storage.get("currentPalette")
   searchBarStyle = primaryColor
@@ -35,14 +40,4 @@ function generateStyle() {
 }
 
 generateStyle()
-
-const searchBarClass = "modified-search-bar"
-
-function changeSearchBarStyle() {
-  console.log("Change search bar style")
-  const style = document.createElement("style")
-  style.innerHTML = searchBarStyle
-  document.head.appendChild(style)
-}
-
 changeSearchBarStyle()
