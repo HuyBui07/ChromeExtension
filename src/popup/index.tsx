@@ -29,28 +29,8 @@ function IndexPopup() {
   )
   const [currentNewType, setCurrentNewType] = useState(null)
 
-  const [currentPallette, setCurrentPallette, { setStoreValue }] = useStorage({
-    key: "currentPallette",
-    instance: storage
-  })
-  const storedThemeName =
-    currentPallette && currentPallette.name ? currentPallette.name : "Default"
-
-  const setTheme = async (themeName) => {
-    if (themes[themeName] === null || themeName === "Default") {
-      console.log("setting null")
-      await storage.set("currentPallette", null).then(() => {
-        setCurrentPallette(null)
-      })
-      return
-    }
-
-    await storage.set("currentPallette", { ...themes[themeName] })
-    setCurrentPallette({ ...themes[themeName] })
-  }
-
   useEffect(() => {
-    setFromStorage()
+    setNewsFromStorage()
   }, [])
   useEffect(() => {
     onNewTypeChange(currentNewType)
@@ -63,7 +43,7 @@ function IndexPopup() {
     setNewsCached(null)
     setNews([])
     setCurrentNewType(null)
-    setFromStorage()
+    setNewsFromStorage()
   }
   const onNewTypeChange = async (newType) => {
     if (currentNewType && newsCached) {
@@ -77,7 +57,7 @@ function IndexPopup() {
       }
     }
   }
-  const setFromStorage = async () => {
+  const setNewsFromStorage = async () => {
     const defaultOption = currentNewsSource.sectionOptions[0]
     const news = await currentNewsSource.fetchFromStorage()
     setCurrentNewType(defaultOption)
@@ -105,20 +85,7 @@ function IndexPopup() {
   return (
     <div className="popup-container">
       <div className="popup-header">Ezuit</div>
-      {/* <div className="theme-select-header">Select Theme</div>
-      <div className="theme-select">
-        <select
-          onChange={(e) => {
-            setTheme(e.target.value)
-          }}
-          value={storedThemeName}>
-          {Object.keys(themes).map((themeName) => (
-            <option key={themeName} value={themeName}>
-              {themeName}
-            </option>
-          ))}
-        </select>
-      </div> */}
+
       <div className="popup-content">
         <div className="deadlines-header">Deadlines</div>
         <div className="deadlines-container">
