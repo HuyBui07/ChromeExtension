@@ -14,6 +14,7 @@ import CourseNoteOption from "./components/moodle/courseNoteOptions"
 import SortCoursesOption from "./components/moodle/courseSortCoursesOptions"
 import CourseThemeOption from "./components/moodle/courseThemeOptions"
 import MoodleFastSeachOption from "./components/moodle/moodleFastSearchOption"
+import StudentClickCountTrackingOption from "./components/students-daa/clickCountTrackingOptions"
 import StudentImproveLinkOption from "./components/students-daa/studentImproveLinkSetting"
 
 function OptionsIndex() {
@@ -32,6 +33,7 @@ function OptionsIndex() {
       <fieldset className="options-fieldset">
         <legend className="options-legend">Student/DAA settings</legend>
         <StudentImproveLinkOption storage={storage} />
+        <StudentClickCountTrackingOption storage={storage} />
       </fieldset>
     </>
   )

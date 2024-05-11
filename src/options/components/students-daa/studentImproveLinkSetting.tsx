@@ -36,7 +36,7 @@ function StudentImproveLinkOption({ storage }) {
   return (
     <>
       <div className="option-select-inline-header">
-        Vertical calendar
+        Turn site link into boxes
         <div className="option-switch">
           <label className="switch">
             <input
