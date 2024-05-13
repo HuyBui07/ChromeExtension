@@ -1,0 +1,125 @@
+body {
+  background-color: #333;
+}
+:root {
+  --switch-size: 40px;
+}
+.options-fieldset {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  background-color: #333;
+  color: #fff;
+  width: 60%;
+  margin: 0 auto;
+}
+
+.options-legend {
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.theme-select-header {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.theme-select select {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #555;
+  background-color: #555;
+  color: #fff;
+}
+
+.theme-select select option {
+  background-color: #555;
+  color: #fff;
+}
+
+.option-select-inline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+.option-button {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #555;
+  background-color: #555;
+  color: #fff;
+  cursor: pointer;
+}
+.option-switch {
+  margin-left: 10px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: var(--switch-size);
+  height: calc(var(--switch-size) / 1.44); /* Adjust the height as needed */
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: calc(
+    var(--switch-size) / 1.8
+  ); /* Adjust the size of the slider circle */
+  width: calc(
+    var(--switch-size) / 1.8
+  ); /* Adjust the size of the slider circle */
+  top: 2px;
+  left: -2px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #2196f3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(calc(var(--switch-size) / 1.8));
+  -ms-transform: translateX(calc(var(--switch-size) / 1.8));
+  transform: translateX(calc(var(--switch-size) / 1.8));
+}
+
+.slider.round {
+  border-radius: calc(var(--switch-size) / 2);
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}

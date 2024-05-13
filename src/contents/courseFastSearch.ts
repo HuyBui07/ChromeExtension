@@ -1,4 +1,9 @@
+import { isBooleanObject } from "util/types"
 import type { PlasmoCSConfig } from "plasmo"
+
+import { FastSearchSettingName } from "~src/options/components/moodle/moodleFastSearchOption"
+
+import SettingWatcher from "./generalSettingsWatcher"
 
 export const config: PlasmoCSConfig = {
   matches: ["https://courses.uit.edu.vn/"],
@@ -45,4 +50,18 @@ const CourseFastSearchBar = () => {
   })
 }
 
-CourseFastSearchBar()
+SettingWatcher.get(FastSearchSettingName).then((value: any) => {
+  if (value === true || value === "true") {
+    CourseFastSearchBar()
+  }
+})
+
+SettingWatcher.watch({
+  [FastSearchSettingName]: (c) => {
+    if (c.newValue === true || c.newValue === "true") {
+      CourseFastSearchBar()
+    }
+  }
+})
+
+export default CourseFastSearchBar
