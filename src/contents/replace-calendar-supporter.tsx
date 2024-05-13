@@ -25,7 +25,7 @@ const ReplaceCalendarSupporterCS = () => {
         if (unsubmittedDeadlines.includes(href)) {
           unsubmittedDeadlines = unsubmittedDeadlines.filter(
             (item: string) => item !== href
-          )
+          ) 
         }
 
         localStorage.setItem(
