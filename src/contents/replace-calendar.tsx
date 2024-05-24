@@ -1,12 +1,12 @@
 import type { PlasmoCSConfig } from "plasmo"
 import React, { useEffect } from "react"
-import { createRoot } from "react-dom/client"
+//components
+import ReactDOM from "react-dom"
 
-import ReplaceCalendar from "~src/components/ReplaceCalendar"
+import UpcomingSection from "~src/components/UpcomingSection"
 import { CalendarSettingName } from "~src/options/components/moodle/courseCalendarOptions"
 
 //types
-import type { Deadline } from "../types"
 import SettingWatcher from "./generalSettingsWatcher"
 
 export const config: PlasmoCSConfig = {
@@ -18,7 +18,7 @@ const ReplaceCalendarCS = async () => {
   //change headline
   const headline = document.getElementById("instance-3-header")
   const newHeadline = document.createElement("h5")
-  newHeadline.innerHTML = "Deadlines"
+  newHeadline.innerHTML = "Calendar"
   headline.replaceWith(newHeadline)
 
   const userbutton = document.getElementsByClassName(
@@ -27,7 +27,10 @@ const ReplaceCalendarCS = async () => {
   userbutton.style.display = "flex"
   userbutton.style.alignItems = "center"
 
-  const ChangeCalendar = async () => {
+  async function ChangeCalendar() {
+    const calendar = document.getElementById("inst3")
+    calendar.style.display = "none"
+
     //get the deadlines from the calendar
     const dates = document.getElementsByTagName("td")
     let deadlinesArr = []
@@ -91,13 +94,21 @@ const ReplaceCalendarCS = async () => {
       JSON.stringify(unsubmittedDeadlines)
     )
 
-    //replace old calendar with new deadline list
-    const targetElement = document.querySelectorAll(
-      ".calendarmonth, .calendartable, .mb-0"
-    )[0]
+  
+    // Add upcoming section
+    const existingUpcomingSection = document.getElementById("upcoming-section")
+    if (existingUpcomingSection) {
+      existingUpcomingSection.remove()
+    }
+    const upcomingSection = document.createElement("div")
+    upcomingSection.id = "upcoming-section"
+    upcomingSection.className = "upcoming-section"
+    ReactDOM.render(<UpcomingSection deadlines={deadlinesArr}/>, upcomingSection)
+    const calendarSection = document.getElementById("inst3")
+    calendarSection.parentNode.insertBefore(upcomingSection, calendarSection)
 
-    const root = createRoot(targetElement)
-    root.render(<ReplaceCalendar deadlines={deadlinesArr} />)
+    //show the new calendar
+    calendar.style.display = "block"
   }
 
   await ChangeCalendar()
@@ -121,18 +132,12 @@ const ReplaceCalendarCS = async () => {
     subtree: true
   })
 
-  //remove online lately
-  const onlineLately = document.getElementById("inst31")
-  onlineLately.remove()
-
   //show the body after rendering
   document.body.style.visibility = "visible"
 
   return () => {
     observer.disconnect()
   }
-
-  return null
 }
 
 const ScanForSubmittedState = async (href: string) => {
