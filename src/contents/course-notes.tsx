@@ -3,7 +3,7 @@ import type { PlasmoCSConfig } from "plasmo"
 import React, { useEffect, useState } from "react"
 import { createRoot } from "react-dom/client"
 
-import { CourseNoteSettingName } from "~src/options/components/moodle/courseNoteOptions"
+import { CourseNoteSettingName } from "../options/components/moodle/courseNoteOptions"
 
 import SettingWatcher from "./generalSettingsWatcher"
 

@@ -25,11 +25,11 @@ const ReplaceCalendarSupporterCS = () => {
         .getElementsByTagName("img")[0]
         .getAttribute("src")
 
-      if (unsubmittedDeadlines.includes(href)) {
-        unsubmittedDeadlines = unsubmittedDeadlines.filter(
-          (item: string) => item !== href
-        )
-      }
+        if (unsubmittedDeadlines.includes(href)) {
+          unsubmittedDeadlines = unsubmittedDeadlines.filter(
+            (item: string) => item !== href
+          )
+        }
 
       localStorage.setItem(
         "unsubmittedDeadlines",
