@@ -41,6 +41,10 @@ const ReplaceCalendar = ({ deadlines }: { deadlines: Deadline[] }) => {
                 key={index}>
                 - {item.content}
               </div>
+              <div
+                style={item.submitted ? { color: "green" } : { color: "red" }}>
+                {item.submitted ? "Submitted" : "Not Submitted"}
+              </div>
             </div>
           )
         })}

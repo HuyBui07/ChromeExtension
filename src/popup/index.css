@@ -64,6 +64,8 @@ body {
   font-weight: bold;
   margin-bottom: 0.618em;
 }
+/* DEADLINE STUFFS */
+
 .deadlines-container {
   display: flex;
   flex-direction: column;
@@ -89,6 +91,9 @@ body {
     }
     .deadline-item-status-submitted {
       color: #00ff00;
+    }
+    .deadline-item-status-due {
+      color: #c2a77e;
     }
   }
   .deadline-item-divider {
@@ -218,4 +223,59 @@ body {
     font-size: 1.2em;
     font-weight: 500;
   }
+}
+/*  LOGIN STUFFS */
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 1em;
+  background-color: #227aff;
+  border-radius: 10px;
+  margin-bottom: 1em;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.5em;
+}
+
+.login-input {
+  width: 100%;
+  padding: 0.5em;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: #59abdb;
+}
+
+.login-error {
+  color: #ff0000;
+  font-size: 0.9em;
+  margin-top: 0.5em;
+  text-align: center;
+}
+
+/* Ensure buttons have consistent styling */
+.button {
+  @apply text-sm;
+  @apply bg-[#0f6cbf];
+  @apply text-white;
+  @apply p-2;
+  @apply rounded-lg;
+  @apply cursor-pointer;
+  display: flex;
+  justify-content: center;
+}
+
+.button[disabled] {
+  background-color: #ccc;
+  cursor: not-allowed;
 }

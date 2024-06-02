@@ -6,9 +6,11 @@ import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
 
 import RefreshIcon from "~assets/refresh"
+import DeadlineTask from "~src/components/DeadlineTask"
 import type { NewsItem, NewSource } from "~src/types"
 
 import themes from "../constants/colorThemes"
+import PopupLogin from "./components/PopupLogin"
 import { DAANewSource, OEPNewSource } from "./utils/newFetching/newSources"
 import { removeDayTime } from "./utils/newFetching/removeDayTime"
 import { shortenText } from "./utils/shortenText"
@@ -16,10 +18,10 @@ import { shortenText } from "./utils/shortenText"
 const MAX_NEWS_ITEMS = 5
 const TEXT_LIMIT = 40
 const availableNewsSources = [DAANewSource, OEPNewSource]
+
 function IndexPopup() {
   const storage = new Storage({ area: "local" })
-  const [news, setNews] = useState([] as NewsItem[]) //To show
-  // Key: NewsType, Value: NewsItem[]
+  const [news, setNews] = useState([] as NewsItem[]) // To show
   const [newsCached, setNewsCached] = useState(
     {} as Record<string, NewsItem[]> | null
   )
@@ -28,16 +30,22 @@ function IndexPopup() {
     availableNewsSources[0]
   )
   const [currentNewType, setCurrentNewType] = useState(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [deadlines, setDeadlines] = useState([])
+  const [deadlineMonth, setDeadlineMonth] = useState(0)
 
   useEffect(() => {
     setNewsFromStorage()
   }, [])
+
   useEffect(() => {
     onNewTypeChange(currentNewType)
   }, [currentNewType])
+
   useEffect(() => {
     onNewSourceChange(currentNewsSource)
   }, [currentNewsSource])
+
   const onNewSourceChange = async (newSource) => {
     setCurrentNewsSource(newSource)
     setNewsCached(null)
@@ -45,6 +53,7 @@ function IndexPopup() {
     setCurrentNewType(null)
     setNewsFromStorage()
   }
+
   const onNewTypeChange = async (newType) => {
     if (currentNewType && newsCached) {
       const news = await currentNewsSource.fetchFromStorage().then((news) => {
@@ -57,6 +66,7 @@ function IndexPopup() {
       }
     }
   }
+
   const setNewsFromStorage = async () => {
     const defaultOption = currentNewsSource.sectionOptions[0]
     const news = await currentNewsSource.fetchFromStorage()
@@ -82,49 +92,33 @@ function IndexPopup() {
     setNewsCached(null)
     setCurrentNewType(null)
   }
+
+  const afterSuccessfulLogin = async () => {
+    setIsLoggedIn(true)
+    //Todo: fetch deadlines
+  }
+
   return (
     <div className="popup-container">
       <div className="popup-header">Ezuit</div>
-
       <div className="popup-content">
         <div className="deadlines-header">Deadlines</div>
         <div className="deadlines-container">
-          <div className="deadline-item">
-            <span className="deadline-item-name">Assignment 1</span>
-            <span>Due: 12/12/2021</span>
-            <span>
-              Status:{" "}
-              <span className="deadline-item-status">Due in 2 days</span>
-            </span>
-
-            <div className="deadline-item-divider">
-              <div></div>
-            </div>
-          </div>
-          <div className="deadline-item">
-            <span className="deadline-item-name">Assignment 2</span>
-            <span>Due: 12/12/2021</span>
-            <span>
-              Status: <span className="deadline-item-status-late">Overdue</span>
-            </span>
-            <div className="deadline-item-divider">
-              <div></div>
-            </div>
-          </div>
-          <div className="deadline-item">
-            <span className="deadline-item-name">Assignment 3</span>
-            <span>Due: 12/12/2021</span>
-            <span>
-              Status:{" "}
-              <span className="deadline-item-status-submitted">Submitted</span>
-            </span>
-            <div className="deadline-item-divider">
-              <div></div>
-            </div>
-          </div>
+          {isLoggedIn ? (
+            <>
+              {deadlines.length > 0 ? (
+                deadlines.map((deadline, index) => (
+                  <DeadlineTask key={index} task={deadline} />
+                ))
+              ) : (
+                <div className="deadline-item">Nothing to do!</div>
+              )}
+            </>
+          ) : (
+            <PopupLogin storage={storage} afterLogin={afterSuccessfulLogin} />
+          )}
         </div>
       </div>
-
       <div className="popup-content">
         <div className="news-header">News</div>
         <div className="news-options">
@@ -189,7 +183,6 @@ function IndexPopup() {
             </div>
           )}
         </div>
-
         <div className="more-options-container">
           <div className="more-options">
             <a href="options.html" target="_blank">
