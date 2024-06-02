@@ -51,3 +51,7 @@
 .details[open] .summary::before {
   transform: rotate(90deg);
 }
+
+.clicked {
+  @apply bg-gray-300 border-2 border-gray-300 rounded-full;
+}

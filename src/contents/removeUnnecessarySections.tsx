@@ -1,4 +1,5 @@
 import type { PlasmoCSConfig } from "plasmo"
+import { useEffect } from "react"
 
 export const config: PlasmoCSConfig = {
   matches: ["https://courses.uit.edu.vn/"],
@@ -14,6 +15,13 @@ const RemoveUnnecessarySectionsCS = () => {
   const onlineLately = document.getElementById("inst31")
   onlineLately.remove()
 
+  const calendarContent = document
+    .getElementById("inst3")
+    .getElementsByClassName("card-text content mt-3")[0]
+
+  // Remove footer
+  const footer = calendarContent.getElementsByClassName("footer")[0]
+  footer.remove()
 }
 
 RemoveUnnecessarySectionsCS()
