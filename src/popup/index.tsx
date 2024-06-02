@@ -10,6 +10,7 @@ import DeadlineTask from "~src/components/DeadlineTask"
 import type { NewsItem, NewSource } from "~src/types"
 
 import themes from "../constants/colorThemes"
+import LogoutFromCourseButton from "./components/LogoutFromCourseButton"
 import PopupLogin from "./components/PopupLogin"
 import { DAANewSource, OEPNewSource } from "./utils/newFetching/newSources"
 import { removeDayTime } from "./utils/newFetching/removeDayTime"
@@ -97,12 +98,23 @@ function IndexPopup() {
     setIsLoggedIn(true)
     //Todo: fetch deadlines
   }
-
+  const afterSuccessfulLogout = async () => {
+    setIsLoggedIn(false)
+  }
   return (
     <div className="popup-container">
       <div className="popup-header">Ezuit</div>
       <div className="popup-content">
-        <div className="deadlines-header">Deadlines</div>
+        <div className="deadlines-header">
+          <span>Deadlines</span>
+
+          {isLoggedIn && (
+            <LogoutFromCourseButton
+              afterLogout={afterSuccessfulLogout}
+              storage={storage}
+            />
+          )}
+        </div>
         <div className="deadlines-container">
           {isLoggedIn ? (
             <>

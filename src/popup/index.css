@@ -36,6 +36,15 @@ body {
   color: #59abdb;
   font-weight: bold;
   margin-bottom: 0.618em;
+
+  justify-content: space-between;
+  .logout-btn-container {
+    .logout-btn {
+      color: #ff0000;
+
+      cursor: pointer;
+    }
+  }
 }
 /* DEADLINE STUFFS */
 

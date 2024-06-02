@@ -121,7 +121,7 @@ const PopupLogin = ({ storage, afterLogin }) => {
 
         // Ask the user if they want to store credentials
         const storeCredentials = window.confirm(
-          "Do you want to store your credentials?"
+          "Do you want to store your credentials? \nThey will be stored until you manually choose to log out."
         )
         if (storeCredentials) {
           await storage.set("moodleUsername", username)
