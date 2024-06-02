@@ -36,7 +36,8 @@ function CourseCalendarOption({ storage }) {
   return (
     <>
       <div className="option-select-inline-header">
-        Vertical calendar
+        Remove unnecessary sections and change calendar layout to display full
+        event details
         <div className="option-switch">
           <label className="switch">
             <input
