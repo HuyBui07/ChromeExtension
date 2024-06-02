@@ -36,7 +36,7 @@ function StudentImproveLinkOption({ storage }) {
   return (
     <>
       <div className="option-select-inline-header">
-        Turn site link into boxes
+        Turn site links into boxes
         <div className="option-switch">
           <label className="switch">
             <input
