@@ -8,6 +8,11 @@ export type Deadline = {
   submitted: boolean
 }
 
+export type DeadlineDetails = {
+  href: string,
+  content: string
+}
+
 export interface NewSource {
   name: string
   source: string

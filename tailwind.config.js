@@ -8,7 +8,8 @@ module.exports = {
     extend: {
       colors: {
         overdue: "#E93737",
-        upcoming: "#3B774F"
+        upcoming: "#3B774F",
+        sectionBorder: "rgba(0, 0, 0, .125)"
       }
     }
   }

@@ -2,7 +2,7 @@ import "../../style.css"
 
 import type { Deadline } from "../types"
 
-const ReplaceCalendar = ({ deadlines }: { deadlines: Deadline[] }) => {
+const UpcomingSection = ({ deadlines }: { deadlines: Deadline[] }) => {
   const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
   const today = new Date()
 
@@ -21,8 +21,10 @@ const ReplaceCalendar = ({ deadlines }: { deadlines: Deadline[] }) => {
 
   return (
     <>
-      <div>
-        <h5 className="text-upcoming text-center">- Upcoming -</h5>
+      <details className="details">
+        <summary className="summary mb-2">
+          <h5 className="mb-0">Upcoming ({upcomingDeadlines.length})</h5>
+        </summary>
         {upcomingDeadlines.map((item, index) => {
           const date = new Date(item.year, item.month - 1, item.day)
           return (
@@ -48,29 +50,33 @@ const ReplaceCalendar = ({ deadlines }: { deadlines: Deadline[] }) => {
             </div>
           )
         })}
-      </div>
-      <h5 className="text-overdue text-center">- Over Due -</h5>
-      <div>
-        {pastDeadlines.map((item, index) => {
-          const date = new Date(item.year, item.month - 1, item.day)
-          return (
-            <div
-              className="deadline-tile"
-              key={index}
-              onClick={() => {
-                window.location.href = item.href
-              }}>
-              <span className="font-bold">
-                {weekdays[date.getDay()]}, {item.day}/{item.month}/{item.year}
-              </span>
+      </details>
+      <details className="details">
+        <summary className="summary">
+          <h5 className="mb-0">Over Due ({pastDeadlines.length})</h5>
+        </summary>
+        <div>
+          {pastDeadlines.map((item, index) => {
+            const date = new Date(item.year, item.month - 1, item.day)
+            return (
+              <div
+                className="deadline-tile"
+                key={index}
+                onClick={() => {
+                  window.location.href = item.href
+                }}>
+                <span className="font-bold">
+                  {weekdays[date.getDay()]}, {item.day}/{item.month}/{item.year}
+                </span>
 
-              <div key={index}>- {item.content}</div>
-            </div>
-          )
-        })}
-      </div>
+                <div key={index}>- {item.content}</div>
+              </div>
+            )
+          })}
+        </div>
+      </details>
     </>
   )
 }
 
-export default ReplaceCalendar
+export default UpcomingSection

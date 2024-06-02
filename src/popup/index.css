@@ -2,33 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.deadline-tile {
-  @apply flex flex-col justify-center w-[90%] ml-auto mr-auto mt-2 mb-2 p-4 border-2 border-gray-300 rounded-xl;
-  @apply hover:bg-gray-300;
-  @apply cursor-pointer;
-}
-
-.upcoming {
-  @apply bg-[#0f6cbf];
-  @apply opacity-5;
-}
-
-.button {
-  @apply text-sm;
-  @apply bg-[#0f6cbf];
-  @apply text-white;
-  @apply p-2;
-  @apply rounded-lg;
-  @apply cursor-pointer;
-}
-.button-danger {
-  @apply text-sm;
-  @apply bg-red-500;
-  @apply text-white;
-  @apply p-2;
-  @apply rounded-lg;
-  @apply cursor-pointer;
-}
 body {
   font-family: "JetBrains Mono", monospace, sans-serif;
   margin: 0;
