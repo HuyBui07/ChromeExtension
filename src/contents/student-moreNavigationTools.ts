@@ -17,7 +17,7 @@ const cookieVarStorageName = "studentSiteCookie"
 const storage = new Storage({
   area: "local"
 })
-//News things to add to the navigation
+//News things to add to the navigation on the left side panel of student.uit.edu.vn
 const additionalLinksToInject = [
   {
     link: "https://student.uit.edu.vn/sinhvien/kqhoctap",
