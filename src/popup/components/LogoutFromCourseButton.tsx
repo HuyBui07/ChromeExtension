@@ -13,7 +13,7 @@ const LogoutFromCourseButton = ({ storage, afterLogout }) => {
   const logout = async () => {
     setError("")
     setLoading(true)
-    const parser = new DOMParser()
+
     //GET sesskey from the normal page. If failed, meaning already logged out
     const sessGetResponse = await fetch(normalUrl)
     const sessGetHtml = await sessGetResponse.text()

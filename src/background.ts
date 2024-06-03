@@ -45,3 +45,53 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     storeStudentSiteCookie()
   }
 })
+
+//On accessing site : https://courses.uit.edu.vn/. Store MOODLEID1_ cookie and MoodleSession cookie to storage
+const storeMoodleCookies = async () => {
+  const cookieName = "MOODLEID1_"
+  const storageCookieName = "MOODLEID1_"
+  const cookie = chrome.cookies.get(
+    {
+      url: "https://courses.uit.edu.vn/",
+      name: cookieName
+    },
+    async (cookie) => {
+      console.log("cookie", cookie)
+      if (cookie) {
+        console.log("cookie moodle found")
+        await storage.set(storageCookieName, cookie)
+        console.log("cookie moodle stored")
+      } else {
+        console.log("cookie moodle not found")
+        await storage.set(storageCookieName, null)
+      }
+    }
+  )
+
+  const cookieName2 = "MoodleSession"
+  const storageCookieName2 = "MoodleSession"
+  const cookie2 = chrome.cookies.get(
+    {
+      url: "https://courses.uit.edu.vn/",
+      name: cookieName2
+    },
+    async (cookie) => {
+      console.log("cookie", cookie)
+      if (cookie) {
+        console.log("cookie moodle session found")
+        await storage.set(storageCookieName2, cookie)
+        console.log("cookie moodle session stored")
+        console
+      } else {
+        console.log("cookie moodle session not found")
+        await storage.set(storageCookieName2, null)
+      }
+    }
+  )
+}
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (tab.url === "https://courses.uit.edu.vn/*") {
+    storeMoodleCookies()
+  }
+})

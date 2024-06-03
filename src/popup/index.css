@@ -8,13 +8,12 @@ body {
   padding: 0;
   background-color: #f5f5f5;
 }
+
 .popup-container {
   padding: 20px;
-
   width: 500px;
   display: flex;
   flex-direction: column;
-
   background-color: #f5f5f5;
   border: 1px solid #ccc;
   border-radius: 10px;
@@ -27,26 +26,38 @@ body {
   color: #59abdb;
   margin-bottom: 0.128em;
 }
+
 .deadlines-header {
   display: flex;
-
   width: 100%;
   flex-direction: row;
   font-size: 1.2em;
   color: #59abdb;
   font-weight: bold;
   margin-bottom: 0.618em;
-
   justify-content: space-between;
-  .logout-btn-container {
-    .logout-btn {
-      color: #ff0000;
+}
 
-      cursor: pointer;
-    }
+.logout-btn-container {
+  .logout-btn {
+    color: #ff0000;
+    cursor: pointer;
   }
 }
+
 /* DEADLINE STUFFS */
+.major-deadlines-container {
+  display: flex;
+  flex-direction: column;
+  padding: 0.8em;
+  gap: 0.5em;
+  background-color: #227aff;
+  border-radius: 10px;
+  margin-bottom: 1em;
+  height: 200px;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
 
 .deadlines-container {
   display: flex;
@@ -57,44 +68,58 @@ body {
   border-radius: 10px;
   margin-bottom: 1em;
 }
+
 .deadline-item {
   color: #ebf6f5;
   display: flex;
   flex-direction: column;
-  .deadline-item-name {
-    font-weight: bold;
+  text-decoration: none;
+}
+
+.deadline-item:hover {
+  background-color: #1e6ad2;
+}
+
+.deadline-item-name {
+  font-weight: bold;
+}
+
+span {
+  .deadline-item-status {
+    color: #c2a77e;
   }
-  span {
-    .deadline-item-status {
-      color: #c2a77e;
-    }
-    .deadline-item-status-late {
-      color: #ff0000;
-    }
-    .deadline-item-status-submitted {
-      color: #00ff00;
-    }
-    .deadline-item-status-due {
-      color: #c2a77e;
-    }
+
+  .deadline-item-status-late {
+    color: #ff0000;
   }
-  .deadline-item-divider {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    div {
-      position: relative;
-      border-bottom: 1px solid #ebf6f5;
-      width: 80%;
-    }
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
+
+  .deadline-item-status-submitted {
+    color: #00ff00;
+  }
+
+  .deadline-item-status-due {
+    color: #c2a77e;
   }
 }
+
+.deadline-item-divider {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+  div {
+    position: relative;
+    border-bottom: 1px solid #ebf6f5;
+    width: 80%;
+  }
+
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
 /* NEWS STUFFS */
 .news-header {
   display: flex;
-
   width: 100%;
   flex-direction: row;
   font-size: 1.2em;
@@ -102,31 +127,36 @@ body {
   font-weight: bold;
   margin-bottom: 0.618em;
 }
+
 .news-options {
   display: flex;
-
   width: 100%;
   flex-direction: row;
   font-size: 1.2em;
   color: #59abdb;
   font-weight: bold;
   margin-bottom: 0.618em;
-  .news-source-select {
-    margin-right: 0.5em;
-    width: 40%;
-    select {
-      width: 100%;
-      border-radius: 1px;
-      border: 1px solid #ccc;
-    }
-  }
-  .news-source-type-select {
-    margin-right: 0.5em;
-  }
-  .refresh-icon {
-    cursor: pointer;
+}
+
+.news-source-select {
+  margin-right: 0.5em;
+  width: 40%;
+
+  select {
+    width: 100%;
+    border-radius: 1px;
+    border: 1px solid #ccc;
   }
 }
+
+.news-source-type-select {
+  margin-right: 0.5em;
+}
+
+.refresh-icon {
+  cursor: pointer;
+}
+
 .news-container {
   display: flex;
   flex-direction: column;
@@ -136,11 +166,13 @@ body {
   border-radius: 10px;
   margin-bottom: 1em;
 }
+
 .news-status {
   color: #0f6cbf;
   font-size: 1.2em;
   font-weight: 500;
 }
+
 .news-status-fetching {
   color: #00ff00;
 }
@@ -150,14 +182,15 @@ body {
   text-decoration: none;
   font-weight: 500;
 }
+
 .more-news {
   display: flex;
   justify-content: end;
   color: #ebf6f5;
-
   font-weight: 500;
   cursor: pointer;
 }
+
 .more-options-container {
   display: flex;
   width: 100%;
@@ -165,15 +198,12 @@ body {
   justify-content: flex-end;
   font-size: 1.2em;
 }
+
 .more-options {
   color: #ebf6f5;
   background-color: #227aff;
   padding: 0.48em;
   border-radius: 5px;
-  cursor: pointer;
-}
-
-.refresh-icon {
   cursor: pointer;
 }
 
@@ -196,18 +226,20 @@ body {
   background-color: #ddd;
   cursor: pointer;
 }
+
 .fetch-news-header {
   display: flex;
   justify-content: space-between;
   width: 100%;
   flex-direction: row;
+
   span {
     font-size: 1.2em;
     font-weight: 500;
   }
 }
-/*  LOGIN STUFFS */
 
+/* LOGIN STUFFS */
 .login-container {
   display: flex;
   flex-direction: column;

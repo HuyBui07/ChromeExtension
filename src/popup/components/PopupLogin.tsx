@@ -24,7 +24,7 @@ const PopupLogin = ({ storage, afterLogin }) => {
     const password = await storage.get("moodlePassword")
     if (username && password) {
       console.log("Attempting to login with stored credentials")
-      await sendLoginRequest(username, password)
+      await sendLoginRequest(username, password, true)
     } else {
       console.log("No stored credentials found")
       setError("No stored credentials found")
@@ -62,7 +62,7 @@ const PopupLogin = ({ storage, afterLogin }) => {
     await sendLoginRequest(username, password)
   }
 
-  const sendLoginRequest = async (username, password) => {
+  const sendLoginRequest = async (username, password, isStored = false) => {
     setLoading(true)
     let loginToken = ""
     const parser = new DOMParser()
@@ -120,15 +120,16 @@ const PopupLogin = ({ storage, afterLogin }) => {
         console.log("Login successful")
 
         // Ask the user if they want to store credentials
-        const storeCredentials = window.confirm(
-          "Do you want to store your credentials? \nThey will be stored until you manually choose to log out."
-        )
-        if (storeCredentials) {
-          await storage.set("moodleUsername", username)
-          await storage.set("moodlePassword", password)
-          console.log("Credentials stored successfully")
+        if (!isStored) {
+          const storeCredentials = window.confirm(
+            "Do you want to store your credentials?"
+          )
+          if (storeCredentials) {
+            await storage.set("moodleUsername", username)
+            await storage.set("moodlePassword", password)
+          }
         }
-
+        console.log("Header:", response.headers.get("Set-Cookie"))
         // Callback after successful login
         if (afterLogin) {
           afterLogin()
@@ -148,12 +149,14 @@ const PopupLogin = ({ storage, afterLogin }) => {
           type="text"
           placeholder="Username"
           value={username}
+          disabled={loading}
           onChange={(e) => setUsername(e.target.value)}
           className="login-input"
         />
         <input
           type="password"
           placeholder="Password"
+          disabled={loading}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           //if enter is pressed, submit the form
@@ -165,7 +168,7 @@ const PopupLogin = ({ storage, afterLogin }) => {
           className="login-input"
         />
         <button type="submit" className="button" disabled={loading}>
-          {loading ? "Loading..." : "Login"}
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
       {error && <p className="login-error">{error}</p>}

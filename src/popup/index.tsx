@@ -2,12 +2,14 @@ import { useEffect, useState } from "react"
 
 import "./index.css"
 
+import { url } from "inspector"
+
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
 
 import RefreshIcon from "~assets/refresh"
 import DeadlineTask from "~src/components/DeadlineTask"
-import type { NewsItem, NewSource } from "~src/types"
+import type { Deadline, NewsItem, NewSource } from "~src/types"
 
 import themes from "../constants/colorThemes"
 import LogoutFromCourseButton from "./components/LogoutFromCourseButton"
@@ -15,7 +17,40 @@ import PopupLogin from "./components/PopupLogin"
 import { DAANewSource, OEPNewSource } from "./utils/newFetching/newSources"
 import { removeDayTime } from "./utils/newFetching/removeDayTime"
 import { shortenText } from "./utils/shortenText"
+import moodleFetchDeadlines from "./utils/taskFetching/fetchDeadlines"
 
+const NEXT_ARROW_ICON = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      fill="currentColor"
+      className="bi bi-arrow-right"
+      viewBox="0 0 16 16">
+      <path
+        fillRule="evenodd"
+        d="M11.354 8.354a.5.5 0 0 0 0-.708l-7-7a.5.5 0 0 0-.708.708L10.293 8l-6.647 6.646a.5.5 0 0 0 .708.708l7-7a.5.5 0 0 0 0-.708z"
+      />
+    </svg>
+  )
+}
+const PREVIOUS_ARROW_ICON = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      fill="currentColor"
+      className="bi bi-arrow-left"
+      viewBox="0 0 16 16">
+      <path
+        fillRule="evenodd"
+        d="M4.646 8.354a.5.5 0 0 1 0-.708l7-7a.5.5 0 0 1 .708.708L5.707 8l6.647 6.646a.5.5 0 0 1-.708.708l-7-7a.5.5 0 0 1 0-.708z"
+      />
+    </svg>
+  )
+}
 const MAX_NEWS_ITEMS = 5
 const TEXT_LIMIT = 40
 const availableNewsSources = [DAANewSource, OEPNewSource]
@@ -33,7 +68,8 @@ function IndexPopup() {
   const [currentNewType, setCurrentNewType] = useState(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [deadlines, setDeadlines] = useState([])
-  const [deadlineMonth, setDeadlineMonth] = useState(0)
+  const [deadlineMonth, setDeadlineMonth] = useState(new Date().getMonth() + 1)
+  const [isFetchingDeadlines, setIsFetchingDeadlines] = useState(false)
 
   useEffect(() => {
     setNewsFromStorage()
@@ -46,6 +82,12 @@ function IndexPopup() {
   useEffect(() => {
     onNewSourceChange(currentNewsSource)
   }, [currentNewsSource])
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchDeadlines()
+    }
+  }, [deadlineMonth, isLoggedIn])
 
   const onNewSourceChange = async (newSource) => {
     setCurrentNewsSource(newSource)
@@ -94,20 +136,64 @@ function IndexPopup() {
     setCurrentNewType(null)
   }
 
+  const fetchDeadlines = async () => {
+    setIsFetchingDeadlines(true)
+    const deadlines = await moodleFetchDeadlines.fetchDeadlines(deadlineMonth)
+    const deadlineObjects = deadlines.map((deadline) => {
+      return {
+        content: deadline.course.shortname + " - " + deadline.name,
+        timestamp: deadline.timestart,
+        submitted: deadline.submitted,
+        year: new Date().getFullYear(),
+        month: deadlineMonth,
+        day: deadline.day,
+        url: deadline.url
+      }
+    })
+    setDeadlines(deadlineObjects)
+    setIsFetchingDeadlines(false)
+  }
+
   const afterSuccessfulLogin = async () => {
     setIsLoggedIn(true)
-    //Todo: fetch deadlines
+    fetchDeadlines()
   }
+
   const afterSuccessfulLogout = async () => {
     setIsLoggedIn(false)
   }
+
+  const handlePreviousMonth = () => {
+    setDeadlineMonth((prevMonth) => (prevMonth > 1 ? prevMonth - 1 : 12))
+  }
+
+  const handleNextMonth = () => {
+    setDeadlineMonth((prevMonth) => (prevMonth < 12 ? prevMonth + 1 : 1))
+  }
+
   return (
     <div className="popup-container">
       <div className="popup-header">Ezuit</div>
       <div className="popup-content">
         <div className="deadlines-header">
           <span>Deadlines</span>
+          {isLoggedIn && (
+            <div className="deadline-controls">
+              <button onClick={handlePreviousMonth}>
+                <PREVIOUS_ARROW_ICON />
+              </button>
 
+              <span style={{ padding: "0 10px" }}>
+                {new Date(0, deadlineMonth - 1).toLocaleString("default", {
+                  month: "long"
+                })}
+              </span>
+              <button onClick={handleNextMonth}>
+                {" "}
+                <NEXT_ARROW_ICON />
+              </button>
+            </div>
+          )}
           {isLoggedIn && (
             <LogoutFromCourseButton
               afterLogout={afterSuccessfulLogout}
@@ -115,10 +201,13 @@ function IndexPopup() {
             />
           )}
         </div>
-        <div className="deadlines-container">
+
+        <div className="major-deadlines-container">
           {isLoggedIn ? (
             <>
-              {deadlines.length > 0 ? (
+              {isFetchingDeadlines ? (
+                <div className="deadline-item">Fetching deadlines...</div>
+              ) : deadlines.length > 0 ? (
                 deadlines.map((deadline, index) => (
                   <DeadlineTask key={index} task={deadline} />
                 ))

@@ -6,10 +6,11 @@ export type Deadline = {
   href: string
   content: string
   submitted: boolean
+  url?: string
 }
 
 export type DeadlineDetails = {
-  href: string,
+  href: string
   content: string
 }
 
