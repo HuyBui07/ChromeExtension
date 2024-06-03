@@ -3,7 +3,7 @@ import React, { useState } from "react"
 //Receive a after log out function to be called after the user is logged out
 //On click ,will log user out from moodle. And call afterLogout function
 //WARNING: This will also clear out stored credentials
-const LogoutFromCourseButton = ({ storage, afterLogout }) => {
+const LogoutFromCourseButton = ({ storage, afterLogout, disabled }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const loginUrl = "https://courses.uit.edu.vn/login/index.php"
@@ -51,7 +51,10 @@ const LogoutFromCourseButton = ({ storage, afterLogout }) => {
 
   return (
     <div className="logout-btn-container">
-      <button className="logout-btn" onClick={logout} disabled={loading}>
+      <button
+        className="logout-btn"
+        onClick={logout}
+        disabled={loading || disabled}>
         {loading ? "Logging out..." : "Logout"}
       </button>
       <p>{error}</p>

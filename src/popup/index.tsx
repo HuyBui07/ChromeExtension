@@ -179,7 +179,9 @@ function IndexPopup() {
           <span>Deadlines</span>
           {isLoggedIn && (
             <div className="deadline-controls">
-              <button onClick={handlePreviousMonth}>
+              <button
+                onClick={handlePreviousMonth}
+                disabled={isFetchingDeadlines}>
                 <PREVIOUS_ARROW_ICON />
               </button>
 
@@ -188,7 +190,7 @@ function IndexPopup() {
                   month: "long"
                 })}
               </span>
-              <button onClick={handleNextMonth}>
+              <button onClick={handleNextMonth} disabled={isFetchingDeadlines}>
                 {" "}
                 <NEXT_ARROW_ICON />
               </button>
@@ -198,6 +200,7 @@ function IndexPopup() {
             <LogoutFromCourseButton
               afterLogout={afterSuccessfulLogout}
               storage={storage}
+              disabled={isFetchingDeadlines}
             />
           )}
         </div>
