@@ -9,7 +9,8 @@ export const config: PlasmoCSConfig = {
   all_frames: true
 }
 
-const CalendarSupplementCS = async () => {
+// Add details below the calendar
+const CalendarDetails = async () => {
   const calendarContent = document
     .getElementById("inst3")
     .getElementsByClassName("card-text content mt-3")[0]
@@ -25,8 +26,9 @@ const CalendarSupplementCS = async () => {
       event.preventDefault()
       event.stopPropagation()
 
-      
-      const popover =  document.getElementsByClassName("popover bs-popover-top fade show")[0] as HTMLElement
+      const popover = document.getElementsByClassName(
+        "popover bs-popover-top fade show"
+      )[0] as HTMLElement
       popover.style.display = "none"
     })
 
@@ -34,8 +36,9 @@ const CalendarSupplementCS = async () => {
       event.preventDefault()
       event.stopPropagation()
 
-      
-      const popover =  document.getElementsByClassName("popover bs-popover-top fade show")[0] as HTMLElement
+      const popover = document.getElementsByClassName(
+        "popover bs-popover-top fade show"
+      )[0] as HTMLElement
       popover.style.display = "block"
     })
 
@@ -74,6 +77,12 @@ const CalendarSupplementCS = async () => {
       )
     })
   }
+}
+
+const CalendarSupplementCS = async () => {
+  const calendarContent = document
+    .getElementById("inst3")
+    .getElementsByClassName("card-text content mt-3")[0]
 
   // Add date details section
   calendarContent.insertAdjacentHTML(
@@ -86,6 +95,19 @@ const CalendarSupplementCS = async () => {
   dateDetails.style.display = "flex"
   dateDetails.style.direction = "row"
   calendarContent.appendChild(dateDetails)
+
+  CalendarDetails()
 }
 
 CalendarSupplementCS()
+
+//observer to check if the calendar is changed, if changed, call ChangeCalendar
+const observer = new MutationObserver(CalendarDetails)
+
+const maincalendar = document.getElementsByClassName("maincalendar")[0]
+
+observer.observe(maincalendar, {
+  attributes: true,
+  childList: false,
+  subtree: true
+})

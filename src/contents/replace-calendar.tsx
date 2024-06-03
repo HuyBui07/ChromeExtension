@@ -28,8 +28,7 @@ const ReplaceCalendarCS = async () => {
   userbutton.style.alignItems = "center"
 
   async function ChangeCalendar() {
-    const calendar = document.getElementById("inst3")
-    calendar.style.display = "none"
+    
 
     //get the deadlines from the calendar
     const dates = document.getElementsByTagName("td")
@@ -107,22 +106,12 @@ const ReplaceCalendarCS = async () => {
     const calendarSection = document.getElementById("inst3")
     calendarSection.parentNode.insertBefore(upcomingSection, calendarSection)
 
-    //show the new calendar
-    calendar.style.display = "block"
   }
 
   await ChangeCalendar()
 
   //observer to check if the calendar is changed, if changed, call ChangeCalendar
-  const observer = new MutationObserver(async () => {
-    if (
-      document
-        .querySelectorAll(".calendarmonth, .calendartable, .mb-0")[0]
-        .getElementsByTagName("thead").length > 0
-    ) {
-      await ChangeCalendar()
-    }
-  })
+  const observer = new MutationObserver(ChangeCalendar)
 
   const maincalendar = document.getElementsByClassName("maincalendar")[0]
 
