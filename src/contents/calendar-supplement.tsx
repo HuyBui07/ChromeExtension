@@ -9,7 +9,7 @@ export const config: PlasmoCSConfig = {
   all_frames: true
 }
 
-// Add details below the calendar
+// Add the deadline details when a day is selected below the calendar
 const CalendarDetails = async () => {
   const calendarContent = document
     .getElementById("inst3")
@@ -22,6 +22,7 @@ const CalendarDetails = async () => {
   for (let i = 0; i < dates.length; i++) {
     const date = dates[i]
 
+    // This listerner is to prevent the popover appear when the date is clicked
     date.addEventListener("focusin", function (event) {
       event.preventDefault()
       event.stopPropagation()
@@ -32,6 +33,7 @@ const CalendarDetails = async () => {
       popover.style.display = "none"
     })
 
+    //This listener is to allow the popover to appear when hovering over a date, but not when the date is clicked
     date.addEventListener("focusout", function (event) {
       event.preventDefault()
       event.stopPropagation()
@@ -42,6 +44,7 @@ const CalendarDetails = async () => {
       popover.style.display = "block"
     })
 
+    // This listener is to get the event details when a date is clicked
     date.addEventListener("click", function (event) {
       event.preventDefault()
       event.stopPropagation()
@@ -79,6 +82,9 @@ const CalendarDetails = async () => {
   }
 }
 
+// Add the date details section below the calendar, the reason to split 
+// the calendar supplement into two parts is to prevent the observer from being called multiple times,
+// causing the <hr> element to be added multiple times.
 const CalendarSupplementCS = async () => {
   const calendarContent = document
     .getElementById("inst3")
@@ -101,7 +107,8 @@ const CalendarSupplementCS = async () => {
 
 CalendarSupplementCS()
 
-//observer to check if the calendar is changed, if changed, call ChangeCalendar
+// Observer to check if the calendar is changed, if changed, call ChangeCalendar, which 
+// will call CalendarDetails to add the deadline details
 const observer = new MutationObserver(CalendarDetails)
 
 const maincalendar = document.getElementsByClassName("maincalendar")[0]
