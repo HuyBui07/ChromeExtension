@@ -15,6 +15,7 @@ const ReplaceCalendarSupporterCS = () => {
 
   if (submitButton) {
     submitButton.addEventListener("click", function () {
+      console.log("submit button clicked")
       let unsubmittedDeadlines = JSON.parse(
         localStorage.getItem("unsubmittedDeadlines") || "[]"
       )
@@ -22,14 +23,16 @@ const ReplaceCalendarSupporterCS = () => {
 
       const href = document
         .getElementsByClassName("tree_item hasicon active_tree_node")[0]
-        .getElementsByTagName("img")[0]
-        .getAttribute("src")
+        .getElementsByTagName("a")[0]
+        .getAttribute("href")
 
-        if (unsubmittedDeadlines.includes(href)) {
-          unsubmittedDeadlines = unsubmittedDeadlines.filter(
-            (item: string) => item !== href
-          )
-        }
+      console.log(href)
+
+      if (unsubmittedDeadlines.includes(href)) {
+        unsubmittedDeadlines = unsubmittedDeadlines.filter(
+          (item: string) => item !== href
+        )
+      }
 
       localStorage.setItem(
         "unsubmittedDeadlines",

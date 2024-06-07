@@ -30,7 +30,7 @@ const CalendarDetails = async () => {
       const popover = document.getElementsByClassName(
         "popover bs-popover-top fade show"
       )[0] as HTMLElement
-      popover.style.display = "none"
+      if (popover) popover.style.display = "none"
     })
 
     //This listener is to allow the popover to appear when hovering over a date, but not when the date is clicked
@@ -41,7 +41,7 @@ const CalendarDetails = async () => {
       const popover = document.getElementsByClassName(
         "popover bs-popover-top fade show"
       )[0] as HTMLElement
-      popover.style.display = "block"
+      if (popover) popover.style.display = "block"
     })
 
     // This listener is to get the event details when a date is clicked
@@ -78,11 +78,12 @@ const CalendarDetails = async () => {
         <DateDetails deadlines={deadlineList} />,
         document.getElementById("date-details")
       )
+      console.log("I run")
     })
   }
 }
 
-// Add the date details section below the calendar, the reason to split 
+// Add the date details section below the calendar, the reason to split
 // the calendar supplement into two parts is to prevent the observer from being called multiple times,
 // causing the <hr> element to be added multiple times.
 const CalendarSupplementCS = async () => {
@@ -102,12 +103,15 @@ const CalendarSupplementCS = async () => {
   dateDetails.style.direction = "row"
   calendarContent.appendChild(dateDetails)
 
-  CalendarDetails()
+  await CalendarDetails()
+  
+  const today = document.getElementsByClassName("today")[0] as HTMLElement
+  today.click()
 }
 
 CalendarSupplementCS()
 
-// Observer to check if the calendar is changed, if changed, call ChangeCalendar, which 
+// Observer to check if the calendar is changed, if changed, call ChangeCalendar, which
 // will call CalendarDetails to add the deadline details
 const observer = new MutationObserver(CalendarDetails)
 
