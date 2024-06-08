@@ -1,7 +1,6 @@
-import { create } from "domain"
 import type { PlasmoCSConfig } from "plasmo"
 import React, { useEffect, useState } from "react"
-import { createRoot } from "react-dom/client"
+import ReactDOM from "react-dom"
 
 import DateDetails from "~src/components/DateDetails"
 
@@ -46,7 +45,7 @@ const CalendarDetails = async () => {
     })
 
     // This listener is to get the event details when a date is clicked
-    date.addEventListener("click", async function (event) {
+    date.addEventListener("click", function (event) {
       event.preventDefault()
       event.stopPropagation()
 
@@ -54,7 +53,6 @@ const CalendarDetails = async () => {
       deadlineList.length = 0
       const eventName = date.getElementsByClassName("eventname")
       const eventHref = date.querySelectorAll('[data-action="view-event"]')
-
       for (let j = 0; j < eventName.length; j++) {
         deadlineList.push({
           href: eventHref[j].getAttribute("href"),
@@ -76,12 +74,14 @@ const CalendarDetails = async () => {
 
       prevDate = date
 
-      createRoot(document.getElementById("date-details") as HTMLElement).render(
-        <DateDetails deadlines={deadlineList} />
+      ReactDOM.render(
+        <DateDetails deadlines={deadlineList} />,
+        document.getElementById("date-details")
       )
-      
     })
   }
+
+  console.log("i run")
 }
 
 // Add the date details section below the calendar, the reason to split
@@ -108,16 +108,40 @@ const CalendarSupplementCS = async () => {
 
   const today = document.getElementsByClassName("today")[0] as HTMLElement
   today.click()
+
+  
 }
 
 CalendarSupplementCS()
 
+const mutationFilter = (mutation: MutationRecord) => {
+  const target = mutation.target as HTMLElement;
+  if (
+    (mutation.type === "attributes" && mutation.attributeName === "aria-describedby") ||
+    (mutation.type === "attributes" && mutation.attributeName === "data-original-title") ||
+    (mutation.type === "attributes" && mutation.attributeName === "title") ||
+    (mutation.type === "attributes" && mutation.attributeName === "class" && target.classList.contains("day-number-circle"))
+  ) {
+    return false;
+  }
+
+  return true
+}
+
 // Observer to check if the calendar is changed, if changed, call ChangeCalendar, which
 // will call CalendarDetails to add the deadline details
-const observer = new MutationObserver(CalendarDetails)
+const observer = new MutationObserver((mutationsList) => {
+  for (let mutation of mutationsList) {
+    if (mutationFilter(mutation)) {
+      CalendarDetails()
+    }
+  }
+})
 
 const maincalendar = document.getElementsByClassName("maincalendar")[0]
 
 observer.observe(maincalendar, {
-  childList: true
+  attributes: true,
+  childList: false,
+  subtree: true
 })

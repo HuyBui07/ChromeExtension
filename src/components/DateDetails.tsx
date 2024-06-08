@@ -17,7 +17,11 @@ const DateDetails = ({ deadlines }: { deadlines: DeadlineDetails[] }) => {
     <div className="flex flex-col w-[100%]">
       {deadlines.map((deadline, index) => (
         <div key={index} className="deadline-tile w-[100%]">
-          <span className="font-bold">{courseNameList[deadline.href].split(" - ")[0]}</span>
+          <span className="font-bold">
+            {courseNameList[deadline.href]
+              ? courseNameList[deadline.href].split(" - ")[0]
+              : null}
+          </span>
           <a
             href={deadline.href}
             style={
