@@ -114,6 +114,8 @@ const CalendarSupplementCS = async () => {
 
 CalendarSupplementCS()
 
+// This function is to filter out the unnecessary mutations because the observer
+// will be called multiple times when the calendar is changed
 const mutationFilter = (mutation: MutationRecord) => {
   const target = mutation.target as HTMLElement;
   if (

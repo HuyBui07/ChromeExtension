@@ -28,8 +28,6 @@ const ReplaceCalendarCS = async () => {
   userbutton.style.alignItems = "center"
 
   async function ChangeCalendar() {
-    
-
     //get the deadlines from the calendar
     const dates = document.getElementsByTagName("td")
     let deadlinesArr = []
@@ -41,6 +39,9 @@ const ReplaceCalendarCS = async () => {
     const unsubmittedDeadlines = JSON.parse(
       localStorage.getItem("unsubmittedDeadlines") || "[]"
     )
+    // const courseNameList = JSON.parse(
+    //   localStorage.getItem("courseNameList") || "{}"
+    // )
 
     //the check if a date have an event and check for its submitted state
     for (let i = 0; i < dates.length; i++) {
@@ -78,6 +79,12 @@ const ReplaceCalendarCS = async () => {
             content: eventName[j].innerHTML,
             submitted: submittedState
           })
+
+          // //get the course name
+          // const courseName = await ScanForCourseName(
+          //   eventHref[j].getAttribute("href")
+          // )
+          // courseNameList[eventHref[j].getAttribute("href")] = courseName
         }
 
         deadlinesArr = deadlinesArr.concat(deadlineList)
@@ -93,7 +100,8 @@ const ReplaceCalendarCS = async () => {
       JSON.stringify(unsubmittedDeadlines)
     )
 
-  
+    // localStorage.setItem("courseNameList", JSON.stringify(courseNameList))
+
     // Add upcoming section
     const existingUpcomingSection = document.getElementById("upcoming-section")
     if (existingUpcomingSection) {
@@ -102,10 +110,12 @@ const ReplaceCalendarCS = async () => {
     const upcomingSection = document.createElement("div")
     upcomingSection.id = "upcoming-section"
     upcomingSection.className = "upcoming-section"
-    ReactDOM.render(<UpcomingSection deadlines={deadlinesArr}/>, upcomingSection)
+    ReactDOM.render(
+      <UpcomingSection deadlines={deadlinesArr} />,
+      upcomingSection
+    )
     const calendarSection = document.getElementById("inst3")
     calendarSection.parentNode.insertBefore(upcomingSection, calendarSection)
-
   }
 
   await ChangeCalendar()
@@ -136,6 +146,18 @@ const ScanForSubmittedState = async (href: string) => {
     return false
   })
 }
+
+// const ScanForCourseName = async (href: string) => {
+//   return await fetch(href).then(async (response) => {
+//     const data = await response.text()
+//     const parser = new DOMParser()
+//     const doc = parser.parseFromString(data, "text/html")
+//     const courseName = doc
+//       .getElementsByClassName("page-header-headings")[0]
+//       .getElementsByTagName("h1")[0].innerHTML
+//     return courseName
+//   })
+// }
 
 SettingWatcher.get(CalendarSettingName).then((calendarEnabled: any) => {
   console.log("Initial calendar setting: ", calendarEnabled)
