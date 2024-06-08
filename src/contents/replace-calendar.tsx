@@ -1,8 +1,8 @@
 import type { PlasmoCSConfig } from "plasmo"
 import React, { useEffect } from "react"
-//components
-import ReactDOM from "react-dom"
+import { createRoot } from 'react-dom/client';
 
+//components
 import UpcomingSection from "~src/components/UpcomingSection"
 import { CalendarSettingName } from "~src/options/components/moodle/courseCalendarOptions"
 
@@ -28,11 +28,10 @@ const ReplaceCalendarCS = async () => {
   userbutton.style.alignItems = "center"
 
   async function ChangeCalendar() {
-    
-
     //get the deadlines from the calendar
     const dates = document.getElementsByTagName("td")
     let deadlinesArr = []
+    const courseNameList = {}
 
     //get the submitted and unsubmitted deadlines from the local storage
     const submittedDeadlines = JSON.parse(
@@ -50,6 +49,7 @@ const ReplaceCalendarCS = async () => {
         const eventName = date.getElementsByClassName("eventname")
         const eventHref = date.querySelectorAll('[data-action="view-event"]')
         const deadlineList = []
+
         for (let j = 0; j < eventName.length; j++) {
           //check if the deadline is submitted or not
           let submittedState = false
@@ -78,12 +78,21 @@ const ReplaceCalendarCS = async () => {
             content: eventName[j].innerHTML,
             submitted: submittedState
           })
+
+          const courseName = await ScanForCourseName(
+            eventHref[j].getAttribute("href")
+          )
+
+          const key = eventHref[j].getAttribute("href").toString()
+
+          courseNameList[key] = courseName
         }
 
         deadlinesArr = deadlinesArr.concat(deadlineList)
       }
     }
 
+    //save the submitted and unsubmitted deadlines to the local storage
     localStorage.setItem(
       "submittedDeadlines",
       JSON.stringify(submittedDeadlines)
@@ -93,7 +102,9 @@ const ReplaceCalendarCS = async () => {
       JSON.stringify(unsubmittedDeadlines)
     )
 
-  
+    // Save the course name to local storage
+    localStorage.setItem("courseNameList", JSON.stringify(courseNameList))
+
     // Add upcoming section
     const existingUpcomingSection = document.getElementById("upcoming-section")
     if (existingUpcomingSection) {
@@ -102,10 +113,12 @@ const ReplaceCalendarCS = async () => {
     const upcomingSection = document.createElement("div")
     upcomingSection.id = "upcoming-section"
     upcomingSection.className = "upcoming-section"
-    ReactDOM.render(<UpcomingSection deadlines={deadlinesArr}/>, upcomingSection)
+    
+    // Add the upcoming section
+    createRoot(upcomingSection).render(<UpcomingSection deadlines={deadlinesArr} />)
+
     const calendarSection = document.getElementById("inst3")
     calendarSection.parentNode.insertBefore(upcomingSection, calendarSection)
-
   }
 
   await ChangeCalendar()
@@ -145,3 +158,13 @@ SettingWatcher.get(CalendarSettingName).then((calendarEnabled: any) => {
     document.body.style.visibility = "visible"
   }
 })
+
+const ScanForCourseName = async (href: string) => {
+  return await fetch(href).then(async (response) => {
+    const data = await response.text()
+    const courseName = data
+      .match(/<div class="page-header-headings"><h1>(.*?)<\/h1><\/div>/)?.[1]
+      .split(" - ")[0]
+    return courseName
+  })
+}

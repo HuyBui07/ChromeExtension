@@ -8,10 +8,16 @@ const DateDetails = ({ deadlines }: { deadlines: DeadlineDetails[] }) => {
     localStorage.getItem("submittedDeadlines") || "[]"
   )
 
+  // Get course name from the local storage
+  const courseNameList = JSON.parse(
+    localStorage.getItem("courseNameList") || "{}"
+  )
+
   return (
     <div className="flex flex-col w-[100%]">
       {deadlines.map((deadline, index) => (
         <div key={index} className="deadline-tile w-[100%]">
+          <span className="font-bold">{courseNameList[deadline.href].split(" - ")[0]}</span>
           <a
             href={deadline.href}
             style={

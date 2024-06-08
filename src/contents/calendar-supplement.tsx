@@ -1,6 +1,7 @@
+import { create } from "domain"
 import type { PlasmoCSConfig } from "plasmo"
 import React, { useEffect, useState } from "react"
-import ReactDOM from "react-dom"
+import { createRoot } from "react-dom/client"
 
 import DateDetails from "~src/components/DateDetails"
 
@@ -45,7 +46,7 @@ const CalendarDetails = async () => {
     })
 
     // This listener is to get the event details when a date is clicked
-    date.addEventListener("click", function (event) {
+    date.addEventListener("click", async function (event) {
       event.preventDefault()
       event.stopPropagation()
 
@@ -53,6 +54,7 @@ const CalendarDetails = async () => {
       deadlineList.length = 0
       const eventName = date.getElementsByClassName("eventname")
       const eventHref = date.querySelectorAll('[data-action="view-event"]')
+
       for (let j = 0; j < eventName.length; j++) {
         deadlineList.push({
           href: eventHref[j].getAttribute("href"),
@@ -74,11 +76,10 @@ const CalendarDetails = async () => {
 
       prevDate = date
 
-      ReactDOM.render(
-        <DateDetails deadlines={deadlineList} />,
-        document.getElementById("date-details")
+      createRoot(document.getElementById("date-details") as HTMLElement).render(
+        <DateDetails deadlines={deadlineList} />
       )
-      console.log("I run")
+      
     })
   }
 }
@@ -104,7 +105,7 @@ const CalendarSupplementCS = async () => {
   calendarContent.appendChild(dateDetails)
 
   await CalendarDetails()
-  
+
   const today = document.getElementsByClassName("today")[0] as HTMLElement
   today.click()
 }
@@ -118,7 +119,5 @@ const observer = new MutationObserver(CalendarDetails)
 const maincalendar = document.getElementsByClassName("maincalendar")[0]
 
 observer.observe(maincalendar, {
-  attributes: true,
-  childList: false,
-  subtree: true
+  childList: true
 })
