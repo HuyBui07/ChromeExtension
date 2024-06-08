@@ -52,7 +52,7 @@ const UpcomingSection = ({ deadlines }: { deadlines: Deadline[] }) => {
         })}
       </details>
       <details className="details">
-        <summary className="summary">
+        <summary className="summary mb-2">
           <h5 className="mb-0">Over Due ({pastDeadlines.length})</h5>
         </summary>
         <div>

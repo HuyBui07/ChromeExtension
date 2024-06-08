@@ -30,7 +30,7 @@ const CalendarDetails = async () => {
       const popover = document.getElementsByClassName(
         "popover bs-popover-top fade show"
       )[0] as HTMLElement
-      popover.style.display = "none"
+      if (popover) popover.style.display = "none"
     })
 
     //This listener is to allow the popover to appear when hovering over a date, but not when the date is clicked
@@ -41,7 +41,7 @@ const CalendarDetails = async () => {
       const popover = document.getElementsByClassName(
         "popover bs-popover-top fade show"
       )[0] as HTMLElement
-      popover.style.display = "block"
+      if (popover) popover.style.display = "block"
     })
 
     // This listener is to get the event details when a date is clicked
@@ -80,9 +80,11 @@ const CalendarDetails = async () => {
       )
     })
   }
+
+  console.log("i run")
 }
 
-// Add the date details section below the calendar, the reason to split 
+// Add the date details section below the calendar, the reason to split
 // the calendar supplement into two parts is to prevent the observer from being called multiple times,
 // causing the <hr> element to be added multiple times.
 const CalendarSupplementCS = async () => {
@@ -102,14 +104,41 @@ const CalendarSupplementCS = async () => {
   dateDetails.style.direction = "row"
   calendarContent.appendChild(dateDetails)
 
-  CalendarDetails()
+  await CalendarDetails()
+
+  const today = document.getElementsByClassName("today")[0] as HTMLElement
+  today.click()
+
+  
 }
 
 CalendarSupplementCS()
 
-// Observer to check if the calendar is changed, if changed, call ChangeCalendar, which 
+// This function is to filter out the unnecessary mutations because the observer
+// will be called multiple times when the calendar is changed
+const mutationFilter = (mutation: MutationRecord) => {
+  const target = mutation.target as HTMLElement;
+  if (
+    (mutation.type === "attributes" && mutation.attributeName === "aria-describedby") ||
+    (mutation.type === "attributes" && mutation.attributeName === "data-original-title") ||
+    (mutation.type === "attributes" && mutation.attributeName === "title") ||
+    (mutation.type === "attributes" && mutation.attributeName === "class" && target.classList.contains("day-number-circle"))
+  ) {
+    return false;
+  }
+
+  return true
+}
+
+// Observer to check if the calendar is changed, if changed, call ChangeCalendar, which
 // will call CalendarDetails to add the deadline details
-const observer = new MutationObserver(CalendarDetails)
+const observer = new MutationObserver((mutationsList) => {
+  for (let mutation of mutationsList) {
+    if (mutationFilter(mutation)) {
+      CalendarDetails()
+    }
+  }
+})
 
 const maincalendar = document.getElementsByClassName("maincalendar")[0]
 

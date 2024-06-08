@@ -1,5 +1,4 @@
 import type { PlasmoCSConfig } from "plasmo"
-import React, { useEffect } from "react"
 //components
 import ReactDOM from "react-dom"
 
@@ -13,6 +12,8 @@ export const config: PlasmoCSConfig = {
   matches: ["https://courses.uit.edu.vn/"],
   all_frames: true
 }
+
+const hrefList = []
 
 const ReplaceCalendarCS = async () => {
   //change headline
@@ -28,8 +29,6 @@ const ReplaceCalendarCS = async () => {
   userbutton.style.alignItems = "center"
 
   async function ChangeCalendar() {
-    
-
     //get the deadlines from the calendar
     const dates = document.getElementsByTagName("td")
     let deadlinesArr = []
@@ -51,22 +50,25 @@ const ReplaceCalendarCS = async () => {
         const eventHref = date.querySelectorAll('[data-action="view-event"]')
         const deadlineList = []
         for (let j = 0; j < eventName.length; j++) {
+          const href = eventHref[j].getAttribute("href")
+
+          // Add to hrefList
+          if (!hrefList.includes(href)) {
+            hrefList.push(href)
+          }
+
           //check if the deadline is submitted or not
           let submittedState = false
-          if (submittedDeadlines.includes(eventHref[j].getAttribute("href"))) {
+          if (submittedDeadlines.includes(href)) {
             submittedState = true
-          } else if (
-            unsubmittedDeadlines.includes(eventHref[j].getAttribute("href"))
-          ) {
+          } else if (unsubmittedDeadlines.includes(href)) {
             submittedState = false
           } else {
-            submittedState = await ScanForSubmittedState(
-              eventHref[j].getAttribute("href")
-            )
+            submittedState = await ScanForSubmittedState(href)
             if (submittedState) {
-              submittedDeadlines.push(eventHref[j].getAttribute("href"))
+              submittedDeadlines.push(href)
             } else {
-              unsubmittedDeadlines.push(eventHref[j].getAttribute("href"))
+              unsubmittedDeadlines.push(href)
             }
           }
           deadlineList.push({
@@ -93,7 +95,6 @@ const ReplaceCalendarCS = async () => {
       JSON.stringify(unsubmittedDeadlines)
     )
 
-  
     // Add upcoming section
     const existingUpcomingSection = document.getElementById("upcoming-section")
     if (existingUpcomingSection) {
@@ -102,10 +103,12 @@ const ReplaceCalendarCS = async () => {
     const upcomingSection = document.createElement("div")
     upcomingSection.id = "upcoming-section"
     upcomingSection.className = "upcoming-section"
-    ReactDOM.render(<UpcomingSection deadlines={deadlinesArr}/>, upcomingSection)
+    ReactDOM.render(
+      <UpcomingSection deadlines={deadlinesArr} />,
+      upcomingSection
+    )
     const calendarSection = document.getElementById("inst3")
     calendarSection.parentNode.insertBefore(upcomingSection, calendarSection)
-
   }
 
   await ChangeCalendar()
