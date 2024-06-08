@@ -1,5 +1,4 @@
 import type { PlasmoCSConfig } from "plasmo"
-import React, { useEffect } from "react"
 //components
 import ReactDOM from "react-dom"
 
@@ -13,6 +12,8 @@ export const config: PlasmoCSConfig = {
   matches: ["https://courses.uit.edu.vn/"],
   all_frames: true
 }
+
+const hrefList = []
 
 const ReplaceCalendarCS = async () => {
   //change headline
@@ -39,9 +40,6 @@ const ReplaceCalendarCS = async () => {
     const unsubmittedDeadlines = JSON.parse(
       localStorage.getItem("unsubmittedDeadlines") || "[]"
     )
-    // const courseNameList = JSON.parse(
-    //   localStorage.getItem("courseNameList") || "{}"
-    // )
 
     //the check if a date have an event and check for its submitted state
     for (let i = 0; i < dates.length; i++) {
@@ -52,22 +50,25 @@ const ReplaceCalendarCS = async () => {
         const eventHref = date.querySelectorAll('[data-action="view-event"]')
         const deadlineList = []
         for (let j = 0; j < eventName.length; j++) {
+          const href = eventHref[j].getAttribute("href")
+
+          // Add to hrefList
+          if (!hrefList.includes(href)) {
+            hrefList.push(href)
+          }
+
           //check if the deadline is submitted or not
           let submittedState = false
-          if (submittedDeadlines.includes(eventHref[j].getAttribute("href"))) {
+          if (submittedDeadlines.includes(href)) {
             submittedState = true
-          } else if (
-            unsubmittedDeadlines.includes(eventHref[j].getAttribute("href"))
-          ) {
+          } else if (unsubmittedDeadlines.includes(href)) {
             submittedState = false
           } else {
-            submittedState = await ScanForSubmittedState(
-              eventHref[j].getAttribute("href")
-            )
+            submittedState = await ScanForSubmittedState(href)
             if (submittedState) {
-              submittedDeadlines.push(eventHref[j].getAttribute("href"))
+              submittedDeadlines.push(href)
             } else {
-              unsubmittedDeadlines.push(eventHref[j].getAttribute("href"))
+              unsubmittedDeadlines.push(href)
             }
           }
           deadlineList.push({
@@ -79,12 +80,6 @@ const ReplaceCalendarCS = async () => {
             content: eventName[j].innerHTML,
             submitted: submittedState
           })
-
-          // //get the course name
-          // const courseName = await ScanForCourseName(
-          //   eventHref[j].getAttribute("href")
-          // )
-          // courseNameList[eventHref[j].getAttribute("href")] = courseName
         }
 
         deadlinesArr = deadlinesArr.concat(deadlineList)
@@ -99,8 +94,6 @@ const ReplaceCalendarCS = async () => {
       "unsubmittedDeadlines",
       JSON.stringify(unsubmittedDeadlines)
     )
-
-    // localStorage.setItem("courseNameList", JSON.stringify(courseNameList))
 
     // Add upcoming section
     const existingUpcomingSection = document.getElementById("upcoming-section")
@@ -146,18 +139,6 @@ const ScanForSubmittedState = async (href: string) => {
     return false
   })
 }
-
-// const ScanForCourseName = async (href: string) => {
-//   return await fetch(href).then(async (response) => {
-//     const data = await response.text()
-//     const parser = new DOMParser()
-//     const doc = parser.parseFromString(data, "text/html")
-//     const courseName = doc
-//       .getElementsByClassName("page-header-headings")[0]
-//       .getElementsByTagName("h1")[0].innerHTML
-//     return courseName
-//   })
-// }
 
 SettingWatcher.get(CalendarSettingName).then((calendarEnabled: any) => {
   console.log("Initial calendar setting: ", calendarEnabled)

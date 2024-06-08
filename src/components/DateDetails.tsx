@@ -16,7 +16,10 @@ const DateDetails = ({ deadlines }: { deadlines: DeadlineDetails[] }) => {
   return (
     <div className="flex flex-col w-[100%]">
       {deadlines.map((deadline, index) => (
-        <div key={index} className="deadline-tile w-[100%]">
+        <div
+          key={index}
+          className="deadline-tile w-[100%]"
+          onClick={() => (window.location.href = deadline.href)}>
           <span className="font-bold">
             {courseNameList[deadline.href]
               ? courseNameList[deadline.href].split(" - ")[0]
